@@ -1,15 +1,20 @@
 import React from 'react';
-import { Trophy, Activity } from 'lucide-react';
-import LeaderboardRow from './LeaderboardRow';
-import TopThreeCard from './TopThreeCard';
+import { RefreshCw } from 'lucide-react';
 import useFetchLeaderboard from '../../hooks/useFetchLeaderboard';
+
+const getTierInfo = (rank) => {
+    if (rank <= 3) return { label: 'Top 3', color: '#F9A24D', borderColor: 'rgba(249,162,77,0.3)', bgColor: 'rgba(249,162,77,0.1)' };
+    if (rank <= 10) return { label: 'Architect', color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)', bgColor: 'rgba(239,68,68,0.1)' };
+    if (rank <= 25) return { label: 'Builder', color: '#eab308', borderColor: 'rgba(234,179,8,0.3)', bgColor: 'rgba(234,179,8,0.1)' };
+    return { label: 'Explorer', color: '#22c55e', borderColor: 'rgba(34,197,94,0.3)', bgColor: 'rgba(34,197,94,0.1)' };
+};
 
 const Leaderboard = () => {
     const { leaderboard, loading, error } = useFetchLeaderboard();
 
     if (loading) {
         return (
-            <section id="leaderboard" className="py-16 px-4 bg-primary">
+            <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a]">
                 <div className="text-center text-gray-400">Loading leaderboard...</div>
             </section>
         );
@@ -17,65 +22,169 @@ const Leaderboard = () => {
 
     if (error) {
         return (
-            <section id="leaderboard" className="py-16 px-4 bg-primary">
+            <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a]">
                 <div className="text-center text-red-400">Error loading leaderboard.</div>
             </section>
         );
     }
 
-    const topThree = leaderboard.slice(0, 3);
-    const rest = leaderboard.slice(3);
+    const displayEntries = leaderboard.slice(0, 10);
 
     return (
-        <section id="leaderboard" className="py-16 px-4 bg-primary">
-            <div className="max-w-6xl mx-auto">
+        <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a]">
+            <div className="max-w-5xl mx-auto">
                 {/* Header */}
-                <div className="text-center mb-12">
+                <div className="text-center mb-14">
                     <div className="flex items-center justify-center gap-3 mb-3">
-                        <Trophy size={28} className="text-yellow-400" />
-                        <h2 className="text-3xl md:text-4xl font-heading font-bold text-white">
-                            Live Leaderboard
+                        <h2
+                            className="text-4xl md:text-5xl font-bold uppercase tracking-wider"
+                            style={{
+                                fontFamily: "'Orbitron', sans-serif",
+                                color: '#F9A24D',
+                                textShadow: '0 0 30px rgba(249,162,77,0.3)',
+                            }}
+                        >
+                            LIVE LEADERBOARD
                         </h2>
-                        <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/15 border border-green-500/30">
-                            <Activity size={12} className="text-green-400 animate-pulse" />
-                            <span className="text-green-400 text-xs font-bold">LIVE</span>
-                        </span>
+                        <RefreshCw
+                            size={24}
+                            className="text-[#F9A24D] animate-spin"
+                            style={{ animationDuration: '3s' }}
+                        />
                     </div>
-                    <p className="text-gray-400 max-w-md mx-auto">
-                        Top citizens of BlockCity ranked by total points across all rooms.
+                    <p className="text-gray-400">
+                        Top citizens competing for BlockCity dominance
                     </p>
                 </div>
 
-                {/* Top 3 Podium */}
-                {topThree.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                        {topThree.map((entry, index) => (
-                            <TopThreeCard key={entry._id || index} entry={entry} rank={index + 1} />
-                        ))}
+                {/* Table */}
+                <div
+                    className="rounded-2xl border overflow-hidden"
+                    style={{
+                        backgroundColor: 'rgba(15, 18, 35, 0.8)',
+                        borderColor: 'rgba(255,255,255,0.06)',
+                        boxShadow: '0 0 60px rgba(0,0,0,0.5)',
+                    }}
+                >
+                    {/* Table Header */}
+                    <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/5">
+                        <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Rank</span>
+                        <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Citizen ID</span>
+                        <span className="col-span-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Name</span>
+                        <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Points</span>
+                        <span className="col-span-2 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Tier</span>
                     </div>
-                )}
 
-                {/* Rest of leaderboard */}
-                {rest.length > 0 && (
-                    <div className="bg-secondary/60 backdrop-blur-sm border border-gray-700/50 rounded-2xl overflow-hidden">
-                        <div className="grid grid-cols-4 gap-4 p-4 text-gray-500 font-semibold text-xs uppercase tracking-wider border-b border-gray-700/50">
-                            <span>Rank</span>
-                            <span>Name</span>
-                            <span>Points</span>
-                            <span>Tier</span>
-                        </div>
-                        <div className="max-h-96 overflow-y-auto">
-                            {rest.map((entry, index) => (
-                                <LeaderboardRow key={entry._id || index} entry={entry} rank={index + 4} />
-                            ))}
-                        </div>
+                    {/* Rows */}
+                    <div className="max-h-[500px] overflow-y-auto">
+                        {displayEntries.map((entry, index) => {
+                            const rank = index + 1;
+                            const tier = getTierInfo(rank);
+                            const isTopThree = rank <= 3;
+
+                            return (
+                                <div
+                                    key={entry._id || index}
+                                    className="grid grid-cols-12 gap-4 items-center px-6 py-4 border-b transition-colors hover:bg-white/[0.03]"
+                                    style={{
+                                        borderColor: isTopThree ? 'rgba(249,162,77,0.15)' : 'rgba(255,255,255,0.03)',
+                                        backgroundColor: isTopThree ? 'rgba(249,162,77,0.03)' : 'transparent',
+                                    }}
+                                >
+                                    {/* Rank */}
+                                    <div className="col-span-2">
+                                        <span
+                                            className="text-lg font-bold"
+                                            style={{
+                                                fontFamily: "'Orbitron', sans-serif",
+                                                color: isTopThree ? '#F9A24D' : '#6b7280',
+                                                textShadow: isTopThree ? '0 0 15px rgba(249,162,77,0.3)' : 'none',
+                                            }}
+                                        >
+                                            #{rank}
+                                        </span>
+                                    </div>
+
+                                    {/* Citizen ID */}
+                                    <div className="col-span-3">
+                                        <span className="text-sm font-mono text-gray-400">
+                                            {entry.citizenId || `BC-${entry._id?.slice(-4).toUpperCase() || '0000'}`}
+                                        </span>
+                                    </div>
+
+                                    {/* Name */}
+                                    <div className="col-span-3">
+                                        <span className={`font-semibold ${isTopThree ? 'text-white' : 'text-gray-300'}`}>
+                                            {entry.name}
+                                        </span>
+                                    </div>
+
+                                    {/* Points */}
+                                    <div className="col-span-2">
+                                        <span
+                                            className="font-bold"
+                                            style={{
+                                                fontFamily: "'Orbitron', sans-serif",
+                                                color: '#F9A24D',
+                                                fontSize: '0.9rem',
+                                            }}
+                                        >
+                                            {(entry.totalScore || 0).toLocaleString()}
+                                        </span>
+                                        <span className="text-gray-500 text-xs ml-1">pts</span>
+                                    </div>
+
+                                    {/* Tier Badge */}
+                                    <div className="col-span-2 text-right">
+                                        <span
+                                            className="px-3 py-1 rounded-full text-xs font-bold border"
+                                            style={{
+                                                color: tier.color,
+                                                borderColor: tier.borderColor,
+                                                backgroundColor: tier.bgColor,
+                                            }}
+                                        >
+                                            {tier.label}
+                                        </span>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
-                )}
+                </div>
 
                 {leaderboard.length === 0 && (
-                    <div className="text-center py-12 text-gray-500">
-                        <Trophy size={40} className="mx-auto mb-3 text-gray-600" />
-                        <p>No entries yet. The competition hasn't started!</p>
+                    <div className="text-center py-16 text-gray-500">
+                        <p className="text-lg" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                            No entries yet
+                        </p>
+                        <p className="text-sm mt-2">The competition hasn't started!</p>
+                    </div>
+                )}
+
+                {/* View Full Leaderboard */}
+                {leaderboard.length > 0 && (
+                    <div className="mt-10 flex justify-center">
+                        <button
+                            className="px-8 py-3 rounded-xl text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:scale-105"
+                            style={{
+                                border: '2px solid rgba(249,162,77,0.4)',
+                                color: '#F9A24D',
+                                boxShadow: '0 0 20px rgba(249,162,77,0.1)',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.borderColor = '#F9A24D';
+                                e.target.style.boxShadow = '0 0 35px rgba(249,162,77,0.25)';
+                                e.target.style.backgroundColor = 'rgba(249,162,77,0.08)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.borderColor = 'rgba(249,162,77,0.4)';
+                                e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.1)';
+                                e.target.style.backgroundColor = 'transparent';
+                            }}
+                        >
+                            VIEW FULL LEADERBOARD
+                        </button>
                     </div>
                 )}
             </div>

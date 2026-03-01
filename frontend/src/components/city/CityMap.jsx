@@ -10,8 +10,8 @@ const ROOMS = [
         challenge: 'Decode laws, draft contracts, find loopholes',
         status: 'open',
         color: '#00d4ff',
-        // Left building with wifi icon
-        x: 13, y: 60,
+        // On the blue cloud above left building
+        x: 16, y: 57,
     },
     {
         id: 'room_2',
@@ -21,8 +21,8 @@ const ROOMS = [
         challenge: 'Budget allocation, crypto puzzles, trade wars',
         status: 'open',
         color: '#f472b6',
-        // Center-left building with rings
-        x: 30, y: 55,
+        // On the blue cloud above center-left tower
+        x: 33, y: 45,
     },
     {
         id: 'room_3',
@@ -32,8 +32,8 @@ const ROOMS = [
         challenge: 'Forensics, biometrics, identity fraud detection',
         status: 'open',
         color: '#06b6d4',
-        // Center main building (tallest hub)
-        x: 48, y: 70,
+        // On the blue cloud above center main building
+        x: 51, y: 55,
     },
     {
         id: 'room_4',
@@ -43,8 +43,8 @@ const ROOMS = [
         challenge: 'Debates, voting systems, policy drafting',
         status: 'open',
         color: '#c084fc',
-        // Right building with cloud
-        x: 68, y: 50,
+        // On the blue cloud above right building
+        x: 68, y: 45,
     },
     {
         id: 'room_5',
@@ -54,8 +54,8 @@ const ROOMS = [
         challenge: 'Firewalls, encryption, threat neutralization',
         status: 'open',
         color: '#34d399',
-        // Far right building with rings
-        x: 86, y: 55,
+        // On the blue cloud above far-right building
+        x: 88, y: 59,
     },
 ];
 
@@ -68,10 +68,11 @@ const CONNECTIONS = [
     { from: 2, to: 4 },
 ];
 
-const CityNode = ({ room, isSelected, onClick }) => {
+const CityNode = ({ room, isSelected, onClick, connections }) => {
     const [hovered, setHovered] = useState(false);
     const { Icon, color, x, y, name } = room;
     const active = isSelected || hovered;
+    const showAbove = y > 45; // Show card above if node is in the lower half
 
     return (
         <div
@@ -170,25 +171,110 @@ const CityNode = ({ room, isSelected, onClick }) => {
             </div>
 
             {/* Label */}
-            <div
-                className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center transition-all duration-300"
-                style={{ top: '70px' }}
-            >
-                <p
-                    className="text-xs font-bold tracking-wide"
+            {!isSelected && (
+                <div
+                    className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center transition-all duration-300"
+                    style={{ top: '70px' }}
+                >
+                    <p
+                        className="text-xs font-bold tracking-wide"
+                        style={{
+                            color: active ? '#fff' : '#e2e8f0',
+                            textShadow: `0 0 12px ${active ? color : 'rgba(0,0,0,0.9)'}, 0 2px 4px rgba(0,0,0,0.8)`,
+                        }}
+                    >
+                        {name}
+                    </p>
+                    {active && (
+                        <p className="text-[10px] text-gray-300 mt-0.5" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>
+                            Click to explore
+                        </p>
+                    )}
+                </div>
+            )}
+
+            {/* Inline Info Card — appears above or below node */}
+            {isSelected && (
+                <div
+                    className="absolute z-50 animate-fadeIn"
                     style={{
-                        color: active ? '#fff' : '#e2e8f0',
-                        textShadow: `0 0 12px ${active ? color : 'rgba(0,0,0,0.9)'}, 0 2px 4px rgba(0,0,0,0.8)`,
+                        width: '280px',
+                        left: x > 70 ? 'auto' : x < 30 ? '0' : '50%',
+                        right: x > 70 ? '0' : 'auto',
+                        transform: x >= 30 && x <= 70 ? 'translateX(-50%)' : 'none',
+                        ...(showAbove
+                            ? { bottom: '90px' }
+                            : { top: '90px' }),
                     }}
                 >
-                    {name}
-                </p>
-                {active && (
-                    <p className="text-[10px] text-gray-300 mt-0.5" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>
-                        Click to explore
-                    </p>
-                )}
-            </div>
+                    <div
+                        className="rounded-xl p-4 border backdrop-blur-xl relative overflow-hidden"
+                        style={{
+                            backgroundColor: 'rgba(10, 10, 26, 0.95)',
+                            borderColor: `${color}40`,
+                            boxShadow: `0 0 40px ${color}20, 0 8px 32px rgba(0,0,0,0.6)`,
+                        }}
+                    >
+                        {/* Scan lines */}
+                        <div
+                            className="absolute inset-0 pointer-events-none opacity-5"
+                            style={{
+                                background: `repeating-linear-gradient(0deg, transparent, transparent 2px, ${color}15 2px, ${color}15 4px)`,
+                            }}
+                        />
+
+                        <div className="relative z-10">
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2.5">
+                                    <div
+                                        className="w-9 h-9 rounded-lg flex items-center justify-center"
+                                        style={{
+                                            backgroundColor: `${color}15`,
+                                            border: `1.5px solid ${color}40`,
+                                        }}
+                                    >
+                                        <Icon size={16} style={{ color }} />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-sm font-bold text-white leading-tight">{name}</h4>
+                                        <p className="text-[10px] text-gray-400">{room.description}</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); onClick(); }}
+                                    className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+                                >
+                                    <X size={12} />
+                                </button>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="space-y-2">
+                                <div className="bg-black/40 rounded-lg px-3 py-2 border border-white/5">
+                                    <p className="text-gray-500 text-[9px] uppercase tracking-widest">Challenge</p>
+                                    <p className="text-gray-300 text-xs mt-0.5">{room.challenge}</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <div className="flex-1 bg-black/40 rounded-lg px-3 py-2 border border-white/5">
+                                        <p className="text-gray-500 text-[9px] uppercase tracking-widest">Status</p>
+                                        <span className={`text-xs font-bold ${room.status === 'open' ? 'text-green-400' : 'text-red-400'
+                                            }`}>
+                                            {room.status === 'open' ? '● Active' : '● Offline'}
+                                        </span>
+                                    </div>
+                                    <div className="flex-1 bg-black/40 rounded-lg px-3 py-2 border border-white/5">
+                                        <p className="text-gray-500 text-[9px] uppercase tracking-widest">Network</p>
+                                        <p className="text-xs font-medium" style={{ color }}>
+                                            {connections} links
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -214,10 +300,13 @@ const CityMap = () => {
                 <div className="relative w-full rounded-2xl border border-white/10 overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.5)]"
                     style={{ aspectRatio: '16/9' }}
                 >
-                    {/* Background Image */}
+                    {/* Background Image with zoom animation */}
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                        style={{ backgroundImage: "url('/neon-city-bg.png')" }}
+                        style={{
+                            backgroundImage: "url('/neon-city-bg.png')",
+                            animation: 'slowZoom 30s ease-in-out infinite',
+                        }}
                     />
                     {/* Subtle dark overlay for node readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a]/40 via-transparent to-[#0a0a1a]/20" />
@@ -294,84 +383,12 @@ const CityMap = () => {
                             room={room}
                             isSelected={selectedRoom?.id === room.id}
                             onClick={() => handleNodeClick(room)}
+                            connections={CONNECTIONS.filter(c =>
+                                ROOMS[c.from].id === room.id || ROOMS[c.to].id === room.id
+                            ).length}
                         />
                     ))}
                 </div>
-
-                {/* Selected Room Info Panel */}
-                {selectedRoom && (
-                    <div
-                        className="max-w-2xl mx-auto mt-6 rounded-2xl p-6 border backdrop-blur-xl animate-fadeIn relative overflow-hidden"
-                        style={{
-                            backgroundColor: `rgba(15, 16, 32, 0.9)`,
-                            borderColor: `${selectedRoom.color}30`,
-                            boxShadow: `0 0 60px ${selectedRoom.color}15, inset 0 0 40px ${selectedRoom.color}05`,
-                        }}
-                    >
-                        {/* Scan line effect */}
-                        <div
-                            className="absolute inset-0 pointer-events-none opacity-5"
-                            style={{
-                                background: `repeating-linear-gradient(0deg, transparent, transparent 2px, ${selectedRoom.color}15 2px, ${selectedRoom.color}15 4px)`,
-                            }}
-                        />
-
-                        <div className="relative z-10">
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div
-                                        className="w-14 h-14 rounded-xl flex items-center justify-center"
-                                        style={{
-                                            backgroundColor: `${selectedRoom.color}15`,
-                                            border: `2px solid ${selectedRoom.color}40`,
-                                            boxShadow: `0 0 25px ${selectedRoom.color}25`,
-                                        }}
-                                    >
-                                        <selectedRoom.Icon size={24} style={{ color: selectedRoom.color }} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-heading font-bold text-white">
-                                            {selectedRoom.name}
-                                        </h3>
-                                        <p className="text-gray-400 text-sm">{selectedRoom.description}</p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => setSelectedRoom(null)}
-                                    className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-gray-700/50 transition-colors"
-                                >
-                                    <X size={16} />
-                                </button>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-                                <div className="bg-black/40 rounded-lg p-3 border border-white/5">
-                                    <p className="text-gray-500 text-[10px] uppercase tracking-widest">Challenge</p>
-                                    <p className="text-gray-300 text-sm mt-1">{selectedRoom.challenge}</p>
-                                </div>
-                                <div className="bg-black/40 rounded-lg p-3 border border-white/5">
-                                    <p className="text-gray-500 text-[10px] uppercase tracking-widest">Status</p>
-                                    <p className="mt-1">
-                                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${selectedRoom.status === 'open'
-                                                ? 'bg-green-500/15 text-green-400 border-green-500/30'
-                                                : 'bg-red-500/15 text-red-400 border-red-500/30'
-                                            }`}>
-                                            {selectedRoom.status === 'open' ? '● Active' : '● Offline'}
-                                        </span>
-                                    </p>
-                                </div>
-                                <div className="bg-black/40 rounded-lg p-3 border border-white/5">
-                                    <p className="text-gray-500 text-[10px] uppercase tracking-widest">Network</p>
-                                    <p className="text-pink-400 text-sm mt-1 font-medium">Connected to {
-                                        CONNECTIONS.filter(c =>
-                                            ROOMS[c.from].id === selectedRoom.id || ROOMS[c.to].id === selectedRoom.id
-                                        ).length
-                                    } nodes</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         </section>
     );

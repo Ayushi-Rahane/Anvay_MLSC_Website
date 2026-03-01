@@ -4,10 +4,50 @@ import { ChevronDown } from 'lucide-react';
 const HeroSection = () => {
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            {/* Background Image */}
+            {/* Animation keyframes */}
+            <style>{`
+                @keyframes slowZoom {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.15); }
+                    100% { transform: scale(1); }
+                }
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateY(40px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes slideDown {
+                    from { opacity: 0; transform: translateY(-30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes fadeInScale {
+                    from { opacity: 0; transform: scale(0.8); }
+                    to { opacity: 1; transform: scale(1); }
+                }
+                @keyframes glowPulse {
+                    0%, 100% { text-shadow: 0 0 20px rgba(249,162,77,0.3), 0 0 40px rgba(249,162,77,0.1); }
+                    50% { text-shadow: 0 0 30px rgba(249,162,77,0.5), 0 0 60px rgba(249,162,77,0.2), 0 0 80px rgba(249,162,77,0.1); }
+                }
+                @keyframes shimmer {
+                    0% { background-position: -200% center; }
+                    100% { background-position: 200% center; }
+                }
+                .hero-title {
+                    background: linear-gradient(135deg, #fff 0%, #F9A24D 40%, #ff6b35 60%, #F9A24D 80%, #fff 100%);
+                    background-size: 200% auto;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    animation: shimmer 4s linear infinite, glowPulse 3s ease-in-out infinite;
+                }
+            `}</style>
+
+            {/* Background Image with slow zoom */}
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('/blockcity-bg.png')" }}
+                style={{
+                    backgroundImage: "url('/blockcity-bg.png')",
+                    animation: 'slowZoom 25s ease-in-out infinite',
+                }}
             />
 
             {/* Dark Overlay */}
@@ -15,17 +55,18 @@ const HeroSection = () => {
 
             {/* Floating Particles */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                {[...Array(6)].map((_, i) => (
+                {[...Array(8)].map((_, i) => (
                     <div
                         key={i}
-                        className="absolute rounded-full opacity-20 animate-pulse"
+                        className="absolute rounded-full animate-pulse"
                         style={{
-                            width: `${4 + i * 2}px`,
-                            height: `${4 + i * 2}px`,
-                            backgroundColor: '#ef4444',
-                            top: `${15 + i * 14}%`,
-                            left: `${10 + i * 15}%`,
-                            animationDelay: `${i * 0.5}s`,
+                            width: `${3 + i * 2}px`,
+                            height: `${3 + i * 2}px`,
+                            backgroundColor: i % 2 === 0 ? '#F9A24D' : '#ff6b35',
+                            top: `${10 + i * 11}%`,
+                            left: `${8 + i * 12}%`,
+                            opacity: 0.15 + (i % 3) * 0.05,
+                            animationDelay: `${i * 0.4}s`,
                             animationDuration: `${2 + i * 0.5}s`,
                         }}
                     />
@@ -34,32 +75,91 @@ const HeroSection = () => {
 
             {/* Content */}
             <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-                <p className="text-highlight text-sm font-semibold tracking-[0.3em] uppercase mb-4 animate-pulse">
-                    MLSC Presents
+                <p
+                    className="text-sm font-bold tracking-[0.4em] uppercase mb-5"
+                    style={{
+                        color: '#F9A24D',
+                        animation: 'slideDown 0.8s ease-out both',
+                        animationDelay: '0.2s',
+                    }}
+                >
+                    MLSC PRESENTS
                 </p>
 
-                <h1 className="text-6xl md:text-8xl font-heading font-bold text-white mb-3 drop-shadow-2xl">
+                <h1
+                    className="hero-title text-7xl md:text-9xl font-bold mb-4 leading-none"
+                    style={{
+                        fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
+                        letterSpacing: '0.1em',
+                        animation: 'fadeInScale 1s ease-out both',
+                        animationDelay: '0.5s',
+                        filter: 'drop-shadow(0 4px 20px rgba(249,162,77,0.3))',
+                    }}
+                >
                     ANVAYA
                 </h1>
 
-                <h2 className="text-xl md:text-3xl font-heading text-gray-200 mb-6 tracking-wide">
+                <h2
+                    className="text-xl md:text-3xl font-light mb-8 tracking-[0.15em] uppercase"
+                    style={{
+                        fontFamily: "'Rajdhani', 'Orbitron', sans-serif",
+                        color: '#e2d5c5',
+                        animation: 'slideUp 0.8s ease-out both',
+                        animationDelay: '0.8s',
+                    }}
+                >
                     The BlockCity Edition
                 </h2>
 
-                <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                <p
+                    className="text-base md:text-lg max-w-2xl mx-auto mb-12 leading-relaxed"
+                    style={{
+                        color: '#9ca3af',
+                        animation: 'slideUp 0.8s ease-out both',
+                        animationDelay: '1.1s',
+                    }}
+                >
                     Navigate through rooms, solve challenges, earn points, and rise through the tiers to become BlockCity's top citizen.
                 </p>
 
-                <div className="flex gap-4 justify-center flex-wrap">
+                <div
+                    className="flex gap-5 justify-center flex-wrap"
+                    style={{
+                        animation: 'slideUp 0.8s ease-out both',
+                        animationDelay: '1.4s',
+                    }}
+                >
                     <a
                         href="#leaderboard"
-                        className="px-8 py-3.5 bg-highlight text-white font-semibold rounded-lg hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-sm md:text-base"
+                        className="group relative px-9 py-4 font-bold rounded-xl text-sm md:text-base tracking-wider uppercase transition-all duration-300 hover:scale-105"
+                        style={{
+                            background: 'linear-gradient(135deg, #F9A24D, #ff6b35)',
+                            color: '#0a0a1a',
+                            boxShadow: '0 0 30px rgba(249,162,77,0.3), 0 4px 15px rgba(0,0,0,0.3)',
+                        }}
+                        onMouseEnter={(e) => e.target.style.boxShadow = '0 0 50px rgba(249,162,77,0.5), 0 8px 25px rgba(0,0,0,0.3)'}
+                        onMouseLeave={(e) => e.target.style.boxShadow = '0 0 30px rgba(249,162,77,0.3), 0 4px 15px rgba(0,0,0,0.3)'}
                     >
                         View Leaderboard
                     </a>
                     <a
                         href="#badge-lookup"
-                        className="px-8 py-3.5 border border-highlight/50 text-highlight font-semibold rounded-lg hover:bg-highlight hover:text-white hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-sm md:text-base"
+                        className="px-9 py-4 font-bold rounded-xl text-sm md:text-base tracking-wider uppercase transition-all duration-300 hover:scale-105"
+                        style={{
+                            border: '2px solid rgba(249,162,77,0.4)',
+                            color: '#F9A24D',
+                            boxShadow: '0 0 20px rgba(249,162,77,0.1)',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.borderColor = '#F9A24D';
+                            e.target.style.boxShadow = '0 0 35px rgba(249,162,77,0.25)';
+                            e.target.style.backgroundColor = 'rgba(249,162,77,0.08)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.borderColor = 'rgba(249,162,77,0.4)';
+                            e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.1)';
+                            e.target.style.backgroundColor = 'transparent';
+                        }}
                     >
                         Find Your Badge
                     </a>
@@ -68,7 +168,7 @@ const HeroSection = () => {
 
             {/* Scroll Indicator */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-                <a href="#city-map" className="text-gray-500 hover:text-white transition-colors">
+                <a href="#city-map" className="text-gray-500 hover:text-[#F9A24D] transition-colors">
                     <ChevronDown size={28} />
                 </a>
             </div>
