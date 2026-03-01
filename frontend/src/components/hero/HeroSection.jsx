@@ -130,10 +130,6 @@ const HeroSection = () => {
                     }}
                 >
                     <a
-<<<<<<< HEAD
-                        href="/participant"
-                        className="px-8 py-3.5 bg-highlight text-white font-semibold rounded-lg hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-sm md:text-base"
-=======
                         href="#leaderboard"
                         className="group relative px-9 py-4 font-bold rounded-xl text-sm md:text-base tracking-wider uppercase transition-all duration-300 hover:scale-105"
                         style={{
@@ -143,15 +139,10 @@ const HeroSection = () => {
                         }}
                         onMouseEnter={(e) => e.target.style.boxShadow = '0 0 50px rgba(249,162,77,0.5), 0 8px 25px rgba(0,0,0,0.3)'}
                         onMouseLeave={(e) => e.target.style.boxShadow = '0 0 30px rgba(249,162,77,0.3), 0 4px 15px rgba(0,0,0,0.3)'}
->>>>>>> 34315af5ca32b7d0371ac7163a0ec0c0ed57e859
                     >
-                        Participant
+                        View Leaderboard
                     </a>
                     <a
-<<<<<<< HEAD
-                        href="/admin"
-                        className="px-8 py-3.5 border border-highlight/50 text-highlight font-semibold rounded-lg hover:bg-highlight hover:text-white hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-sm md:text-base"
-=======
                         href="#badge-lookup"
                         className="px-9 py-4 font-bold rounded-xl text-sm md:text-base tracking-wider uppercase transition-all duration-300 hover:scale-105"
                         style={{
@@ -169,15 +160,8 @@ const HeroSection = () => {
                             e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.1)';
                             e.target.style.backgroundColor = 'transparent';
                         }}
->>>>>>> 34315af5ca32b7d0371ac7163a0ec0c0ed57e859
                     >
-                        Admin
-                    </a>
-                    <a
-                        href="#about-us"
-                        className="px-8 py-3.5 border border-gray-400 text-gray-200 font-semibold rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-300 text-sm md:text-base"
-                    >
-                        About Us
+                        Find Your Badge
                     </a>
                 </div>
             </div>
@@ -188,7 +172,7 @@ const HeroSection = () => {
                     <ChevronDown size={28} />
                 </a>
             </div>
-        </section>
+        </section >
     );
 };
 
