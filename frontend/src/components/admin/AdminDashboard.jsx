@@ -1,27 +1,42 @@
 import React, { useState } from 'react';
-import RoomStatusBoard from './RoomStatusBoard';
-import AddScoreModal from './AddScoreModal';
+import { useAuth } from '../../context/AuthContext';
+import RoomSelection from './RoomSelection';
+import RoomControlDashboard from './RoomControlDashboard';
 
 const AdminDashboard = () => {
-    const [showModal, setShowModal] = useState(false);
+    const { logout, admin } = useAuth();
+    const [selectedRoom, setSelectedRoom] = useState(null);
 
+    // Room selected → show room control dashboard
+    if (selectedRoom) {
+        return (
+            <RoomControlDashboard
+                room={selectedRoom}
+                onBack={() => setSelectedRoom(null)}
+            />
+        );
+    }
+
+    // No room selected → show room selection
     return (
-        <div className="max-w-6xl mx-auto py-8 px-4">
-            <div className="flex items-center justify-between mb-8">
-                <h1 className="text-3xl font-heading font-bold text-white">
-                    ⚙️ Admin Dashboard
-                </h1>
+        <div className="min-h-screen bg-primary">
+            {/* Top Bar */}
+            <div className="max-w-6xl mx-auto px-4 pt-6 flex items-center justify-between">
+                <div>
+                    <p className="text-gray-400 text-sm">
+                        Welcome back, <span className="text-white font-medium">{admin?.name || 'Admin'}</span>
+                    </p>
+                </div>
                 <button
-                    onClick={() => setShowModal(true)}
-                    className="px-6 py-3 bg-highlight text-white font-semibold rounded-lg hover:bg-red-600 transition-colors"
+                    onClick={logout}
+                    className="px-5 py-2 border border-gray-600 text-gray-300 text-sm font-semibold rounded-lg hover:bg-gray-700 hover:text-white transition-colors"
                 >
-                    + Add Score
+                    Logout
                 </button>
             </div>
 
-            <RoomStatusBoard />
-
-            {showModal && <AddScoreModal onClose={() => setShowModal(false)} />}
+            {/* Room Selection */}
+            <RoomSelection onSelectRoom={setSelectedRoom} />
         </div>
     );
 };
