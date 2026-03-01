@@ -4,7 +4,7 @@ import { Scale, Landmark, Fingerprint, Building2, Shield } from 'lucide-react';
 const ROOMS = [
     {
         id: 'room_1',
-        name: 'Law Foundry',
+        name: '1. Law Foundry',
         Icon: Scale,
         description: 'Legal challenges and constitutional puzzles',
         completedCount: 12,
@@ -13,7 +13,7 @@ const ROOMS = [
     },
     {
         id: 'room_2',
-        name: 'Treasury Mint',
+        name: '2. Treasury Mint',
         Icon: Landmark,
         description: 'Financial strategy and resource management',
         completedCount: 8,
@@ -22,7 +22,7 @@ const ROOMS = [
     },
     {
         id: 'room_3',
-        name: 'Identity Bureau',
+        name: '3. Identity Bureau',
         Icon: Fingerprint,
         description: 'Citizen verification and identity challenges',
         completedCount: 5,
@@ -31,7 +31,7 @@ const ROOMS = [
     },
     {
         id: 'room_4',
-        name: 'Council Chamber',
+        name: '4. Council Chamber',
         Icon: Building2,
         description: 'Governance decisions and policy debates',
         completedCount: 3,
@@ -40,7 +40,7 @@ const ROOMS = [
     },
     {
         id: 'room_5',
-        name: 'Control Center',
+        name: '5. Control Center',
         Icon: Shield,
         description: 'Cybersecurity and system defense missions',
         completedCount: 0,
@@ -91,8 +91,8 @@ const RoomSelection = ({ onSelectRoom }) => {
                                 </div>
                                 <span
                                     className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${room.status === 'open'
-                                            ? 'bg-green-500/15 text-green-400 border border-green-500/30'
-                                            : 'bg-red-500/15 text-red-400 border border-red-500/30'
+                                        ? 'bg-green-500/15 text-green-400 border border-green-500/30'
+                                        : 'bg-red-500/15 text-red-400 border border-red-500/30'
                                         }`}
                                 >
                                     {room.status === 'open' ? '● Open' : '● Closed'}
