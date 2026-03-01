@@ -300,13 +300,10 @@ const CityMap = () => {
                 <div className="relative w-full rounded-2xl border border-white/10 overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.5)]"
                     style={{ aspectRatio: '16/9' }}
                 >
-                    {/* Background Image with zoom animation */}
+                    {/* Background Image */}
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                        style={{
-                            backgroundImage: "url('/neon-city-bg.png')",
-                            animation: 'slowZoom 30s ease-in-out infinite',
-                        }}
+                        style={{ backgroundImage: "url('/neon-city-bg.png')" }}
                     />
                     {/* Subtle dark overlay for node readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a]/40 via-transparent to-[#0a0a1a]/20" />
