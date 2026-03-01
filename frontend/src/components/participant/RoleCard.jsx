@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Pickaxe, Search, Coins, Landmark, Handshake, CreditCard, Zap } from 'lucide-react';
 
 const RoleCard = ({ role, onAssignRandom, readonly = false }) => {
     const [flipped, setFlipped] = useState(false);
@@ -10,7 +11,9 @@ const RoleCard = ({ role, onAssignRandom, readonly = false }) => {
                 onClick={onAssignRandom}
                 style={{ background: 'rgba(255,255,255,0.02)' }}
             >
-                <div className="text-5xl mb-3 group-hover:scale-110 transition-transform">🎴</div>
+                <div className="flex justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <CreditCard size={48} className="text-gray-400" />
+                </div>
                 <p className="text-gray-400 text-sm font-body">Draw your Role Card</p>
                 <p className="text-gray-600 text-xs mt-1">Click to reveal your destiny</p>
             </div>
@@ -50,7 +53,7 @@ const RoleCard = ({ role, onAssignRandom, readonly = false }) => {
                     />
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-3xl">{role.emoji}</span>
+                            <span className="text-3xl flex items-center justify-center text-white">{role.icon ? React.createElement(role.icon, { size: 32, style: { color: role.color } }) : <CreditCard size={32} />}</span>
                             <span
                                 className="text-[10px] font-bold tracking-[0.2em] uppercase px-2 py-1 rounded-full"
                                 style={{ color: role.color, border: `1px solid ${role.color}40`, background: `${role.color}10` }}
@@ -82,7 +85,7 @@ const RoleCard = ({ role, onAssignRandom, readonly = false }) => {
                         boxShadow: `0 0 30px ${role.color}30`,
                     }}
                 >
-                    <span className="text-4xl mb-2">⚡</span>
+                    <Zap size={40} className="mb-2 text-yellow-400" />
                     <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-1">Bonus Points</p>
                     <p className="text-white text-sm font-medium leading-relaxed">{role.bonus}</p>
                 </div>

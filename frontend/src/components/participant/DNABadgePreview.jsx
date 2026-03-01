@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Dna, Building2 } from 'lucide-react';
 
 const DNABadgePreview = ({ participantName, role, roomProgress, highestTier, teamName, roomsCompleted, firstRoomEntered, ROOMS_META }) => {
     const [copied, setCopied] = useState(false);
@@ -47,7 +48,7 @@ const DNABadgePreview = ({ participantName, role, roomProgress, highestTier, tea
                 style={{ borderColor: 'rgba(249,162,77,0.15)', background: 'rgba(249,162,77,0.04)' }}
             >
                 <div className="flex items-center gap-2">
-                    <span className="text-lg">🧬</span>
+                    <Dna size={20} className="text-blue-400" />
                     <div>
                         <h3 className="text-sm font-heading font-bold text-white">DNA Badge Preview</h3>
                         <p className="text-[10px] text-gray-500">Your unique NFT metadata</p>
@@ -91,7 +92,7 @@ const DNABadgePreview = ({ participantName, role, roomProgress, highestTier, tea
                             className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
                             style={{ background: 'rgba(249,162,77,0.1)', border: '1px solid rgba(249,162,77,0.3)' }}
                         >
-                            {role?.emoji || '🏙️'}
+                            {role?.icon ? React.createElement(role.icon, { size: 24, style: { color: role.color || '#fff' } }) : <Building2 size={24} className="text-gray-400" />}
                         </div>
                         <div>
                             <p className="text-white font-heading font-bold text-sm leading-tight">{metadata.name}</p>

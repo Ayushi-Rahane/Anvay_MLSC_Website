@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, CheckCircle, Copy, ExternalLink, BookOpen, Code2, Zap } from 'lucide-react';
+import { ChevronLeft, CheckCircle, Copy, ExternalLink, BookOpen, Code2, Zap, Scale, Briefcase, Palette, Landmark, Wrench, Search, Package, Pickaxe, Leaf, CircleDot, Hexagon, Tag, Trophy } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 
 const ROOM_CONTENT = {
@@ -57,7 +57,7 @@ contract CityLaw {
         builderTask: 'Add bool isPaused + pause()/unpause() with onlyOwner. Add a pausable modifier that blocks setCity() when paused.',
         architectTask: 'Multi-owner: mapping(address=>bool) isOwner, addOwner(), removeOwner(). Require 2-of-N owners to approve any law addition.',
         tools: [
-            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: '🔧' },
+            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
         ],
     },
     room_2: {
@@ -101,8 +101,8 @@ contract CityToken is ERC20, Ownable {
         builderTask: 'Add burn(uint256 amount) function to let any holder destroy their tokens. Update totalSupply correctly.',
         architectTask: 'Staking system: stakedAmount + stakedAt, rewards calculated on unstake by time * rate.',
         tools: [
-            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: '🔧' },
-            { label: 'Polygonscan Amoy', url: 'https://amoy.polygonscan.com', icon: '🔍' },
+            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
+            { label: 'Polygonscan Amoy', url: 'https://amoy.polygonscan.com', icon: <Search size={16} /> },
         ],
     },
     room_3: {
@@ -155,8 +155,8 @@ contract CitizenBadge is ERC721, Ownable {
         builderTask: 'Add batchMintBadge(address[] memory, string[] memory) — loop through arrays, mint to each. Great for certificates at scale.',
         architectTask: 'On-chain pseudo-random rarity: mapping(uint256=>uint256) rarityScore. On mint: rarityScore[id] = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, id))) % 100.',
         tools: [
-            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: '🔧' },
-            { label: 'NFT.Storage', url: 'https://nft.storage', icon: '📦' },
+            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
+            { label: 'NFT.Storage', url: 'https://nft.storage', icon: <Package size={16} /> },
         ],
     },
     room_4: {
@@ -242,7 +242,7 @@ contract CityVoting {
         builderTask: 'Add uint256 public quorum = 3. In execute() add require(yesVotes + noVotes >= quorum, "Quorum not met"). Add setQuorum() onlyOwner.',
         architectTask: 'Token-weighted voting: import Room 2 token interface. Replace yesVotes++ with yesVotes += IERC20(tokenAddress).balanceOf(msg.sender).',
         tools: [
-            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: '🔧' },
+            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
         ],
     },
     room_5: {
@@ -311,17 +311,18 @@ async function setCityName() {
         builderTask: 'Add contract.on("LawAdded", callback). Every time anyone calls addLaw(), the UI updates automatically — real-time Web3 UI without page refresh.',
         architectTask: 'Full BlockCity Dashboard — four contract instances, four read functions on load, four UI sections, all auto-refreshing every 30s with setInterval().',
         tools: [
-            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: '🔧' },
-            { label: 'Ethers.js Docs', url: 'https://docs.ethers.org', icon: '📚' },
+            { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
+            { label: 'Ethers.js Docs', url: 'https://docs.ethers.org', icon: <BookOpen size={16} /> },
         ],
     },
 };
 
 const TIER_OPTIONS = [
-    { id: 'explorer', label: '🌱 Explorer', desc: '10 pts — core task complete', color: '#34d399' },
-    { id: 'builder', label: '🟡 Builder', desc: '15 pts — extra task complete', color: '#F9A24D' },
-    { id: 'architect', label: '🔴 Architect', desc: '20 pts — challenge complete', color: '#ef4444' },
+    { id: 'explorer', label: 'Explorer', desc: '10 pts — core task complete', color: '#34d399', icon: Leaf },
+    { id: 'builder', label: 'Builder', desc: '15 pts — extra task complete', color: '#F9A24D', icon: CircleDot },
+    { id: 'architect', label: 'Architect', desc: '20 pts — challenge complete', color: '#ef4444', icon: Hexagon },
 ];
+const ROOM_ICONS = { 'Law Foundry': Scale, 'Treasury Mint': Briefcase, 'Identity Bureau': Palette, 'Council Chamber': Landmark, 'Control Center': Wrench };
 
 const RoomDetail = () => {
     const { roomId } = useParams();
@@ -391,7 +392,7 @@ const RoomDetail = () => {
                     <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-2xl">{room.icon}</span>
+                                <span className="flex items-center justify-center">{React.createElement(ROOM_ICONS[room.name] || Landmark, { size: 28, style: { color: room.color } })}</span>
                                 <span
                                     className="text-[10px] font-bold tracking-[0.2em] uppercase px-2 py-1 rounded-full"
                                     style={{ color: room.color, border: `1px solid ${room.color}30`, background: `${room.color}10` }}
@@ -433,7 +434,7 @@ const RoomDetail = () => {
                         borderLeft: `4px solid ${room.color}`,
                     }}
                 >
-                    <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-1">🌱 Zero Assumption Warmup</p>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-1 flex items-center gap-1.5"><Leaf size={14} /> Zero Assumption Warmup</p>
                     <p className="text-gray-300 text-sm leading-relaxed italic">"{content.warmup}"</p>
                 </div>
 
@@ -536,7 +537,7 @@ const RoomDetail = () => {
                             className="rounded-xl border p-4"
                             style={{ background: `${room.color}06`, borderColor: `${room.color}25` }}
                         >
-                            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2">⚡ Challenge</p>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2 flex items-center gap-1.5"><Zap size={14} /> Challenge</p>
                             <p className="text-gray-300 text-sm leading-relaxed">{content.challenge}</p>
                         </div>
 
@@ -545,7 +546,7 @@ const RoomDetail = () => {
                             className="rounded-xl border p-4"
                             style={{ background: 'rgba(249,162,77,0.04)', borderColor: 'rgba(249,162,77,0.15)' }}
                         >
-                            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">🟡 Builder Extra Task</p>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-1.5"><CircleDot size={14} /> Builder Extra Task</p>
                             <p className="text-gray-300 text-sm leading-relaxed">{content.builderTask}</p>
                         </div>
 
@@ -553,7 +554,7 @@ const RoomDetail = () => {
                             className="rounded-xl border p-4"
                             style={{ background: 'rgba(239,68,68,0.04)', borderColor: 'rgba(239,68,68,0.15)' }}
                         >
-                            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">🔴 Architect Challenge</p>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-1.5"><Hexagon size={14} /> Architect Challenge</p>
                             <p className="text-gray-300 text-sm leading-relaxed">{content.architectTask}</p>
                         </div>
 
@@ -580,8 +581,8 @@ const RoomDetail = () => {
                                                 }}
                                             >
                                                 <div>
-                                                    <p className="text-sm font-medium" style={{ color: selectedTier === tier.id ? tier.color : '#9ca3af' }}>
-                                                        {tier.label}
+                                                    <p className="text-sm font-medium flex items-center gap-1.5" style={{ color: selectedTier === tier.id ? tier.color : '#9ca3af' }}>
+                                                        {React.createElement(tier.icon, { size: 16 })} {tier.label}
                                                     </p>
                                                     <p className="text-[10px] text-gray-600">{tier.desc}</p>
                                                 </div>
@@ -602,12 +603,12 @@ const RoomDetail = () => {
                                             boxShadow: selectedTier ? `0 0 20px ${room.color}30` : 'none',
                                         }}
                                     >
-                                        {submitting ? 'Submitting...' : '🏷️ Claim Stamp'}
+                                        {submitting ? 'Submitting...' : <span className="flex items-center justify-center gap-2"><Tag size={16} /> Claim Stamp</span>}
                                     </button>
                                 </>
                             ) : (
                                 <div className="text-center py-4">
-                                    <div className="text-4xl mb-2">🏆</div>
+                                    <Trophy size={48} className="mx-auto mb-2 text-yellow-400" />
                                     <p className="text-white font-medium mb-1">
                                         Stamp claimed at <span style={{ color: room.color }}>{currentTier}</span> tier
                                     </p>
@@ -629,7 +630,7 @@ const RoomDetail = () => {
                                     className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all hover:scale-105"
                                     style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}
                                 >
-                                    <span>{tool.icon}</span>
+                                    {tool.icon}
                                     {tool.label}
                                     <ExternalLink size={9} />
                                 </a>

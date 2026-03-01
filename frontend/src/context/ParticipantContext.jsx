@@ -26,8 +26,8 @@ const getMockParticipant = (id) => ({
         { name: 'Control Center', description: 'Build Web3 applications', completed: false, inProgress: true, progress: 75, points: 100, maxProgress: 100, tier: null, earnedPoints: 0 },
     ],
     badges: [
-        { name: 'Quick Learner', icon: '⚡' },
-        { name: 'Team Player', icon: '🤝' },
+        { name: 'Quick Learner', icon: 'zap' },
+        { name: 'Team Player', icon: 'handshake' },
     ],
 });
 

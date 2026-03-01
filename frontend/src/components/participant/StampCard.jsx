@@ -1,11 +1,12 @@
 import React from 'react';
-import { CheckCircle, Lock, Circle } from 'lucide-react';
+import { CheckCircle, Lock, Circle, Leaf, CircleDot, Hexagon, Scale, Briefcase, Palette, Landmark, Wrench } from 'lucide-react';
 
 const TIER_CONFIG = {
-    explorer: { label: 'Explorer', color: '#34d399', points: 10, emoji: '🌱' },
-    builder: { label: 'Builder', color: '#F9A24D', points: 15, emoji: '🟡' },
-    architect: { label: 'Architect', color: '#ef4444', points: 20, emoji: '🔴' },
+    explorer: { label: 'Explorer', color: '#34d399', points: 10, icon: Leaf },
+    builder: { label: 'Builder', color: '#F9A24D', points: 15, icon: CircleDot },
+    architect: { label: 'Architect', color: '#ef4444', points: 20, icon: Hexagon },
 };
+const ROOM_ICONS = { 'Law Foundry': Scale, 'Treasury Mint': Briefcase, 'Identity Bureau': Palette, 'Council Chamber': Landmark, 'Control Center': Wrench };
 
 const StampCard = ({ room, tier, roomNumber }) => {
     const isCompleted = !!tier;
@@ -48,10 +49,10 @@ const StampCard = ({ room, tier, roomNumber }) => {
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                         <h4
-                            className="text-sm font-heading font-bold truncate"
+                            className="text-sm font-heading font-bold truncate flex items-center gap-1.5"
                             style={{ color: isCompleted ? '#fff' : '#6b7280' }}
                         >
-                            {room.icon} {room.name}
+                            {React.createElement(ROOM_ICONS[room.name] || Landmark, { size: 16 })} {room.name}
                         </h4>
                         {isCompleted ? (
                             <CheckCircle size={16} style={{ color: room.color, flexShrink: 0 }} />
@@ -63,14 +64,14 @@ const StampCard = ({ room, tier, roomNumber }) => {
                     {isCompleted && tierConfig ? (
                         <div className="flex items-center gap-2 mt-1.5">
                             <span
-                                className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full uppercase"
+                                className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full uppercase flex items-center gap-1"
                                 style={{
                                     color: tierConfig.color,
                                     background: `${tierConfig.color}15`,
                                     border: `1px solid ${tierConfig.color}30`,
                                 }}
                             >
-                                {tierConfig.emoji} {tierConfig.label}
+                                {React.createElement(tierConfig.icon, { size: 10 })} {tierConfig.label}
                             </span>
                             <span className="text-[10px] text-gray-500">+{tierConfig.points} pts</span>
                         </div>

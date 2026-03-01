@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 import StampCard from '../../components/participant/StampCard';
 import DNABadgePreview from '../../components/participant/DNABadgePreview';
@@ -56,7 +56,7 @@ const Progress = () => {
                         <div>
                             <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Journey Progress</p>
                             <h1 className="text-3xl font-heading font-bold text-white">{participantName || 'Citizen'}</h1>
-                            <p className="text-gray-500 text-sm mt-1">🏘️ {teamName || 'Solo'} · {shortAddress}</p>
+                            <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={14} /> {teamName || 'Solo'} · {shortAddress}</p>
                         </div>
                         <div
                             className="rounded-2xl px-5 py-4 text-center"

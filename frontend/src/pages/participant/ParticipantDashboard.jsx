@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Trophy, Target, TrendingUp, MapPin, LogOut, QrCode, CheckCircle, Lock, User } from 'lucide-react';
+import { Trophy, Target, TrendingUp, MapPin, LogOut, QrCode, CheckCircle, Lock, User, Scale, Briefcase, Palette, Landmark, Wrench, Home, Award, Zap, Handshake } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 
 const TIER_ORDER = ['Explorer', 'Builder', 'Architect'];
 const TIER_COLORS = { Explorer: '#34d399', Builder: '#F9A24D', Architect: '#ef4444', '—': '#6b7280' };
 const ROLE_COLORS = { Auditor: '#06b6d4', Miner: '#f59e0b', Investor: '#10b981', Governor: '#8b5cf6', Ambassador: '#f472b6', '—': '#6b7280' };
-const ROOM_ICONS = { 'Law Foundry': '⚖️', 'Treasury Mint': '💼', 'Identity Bureau': '🎨', 'Council Chamber': '🏛️', 'Control Center': '🔧' };
+const ROOM_ICONS = { 'Law Foundry': Scale, 'Treasury Mint': Briefcase, 'Identity Bureau': Palette, 'Council Chamber': Landmark, 'Control Center': Wrench };
+const BADGE_ICONS = { '⚡': Zap, '🤝': Handshake, 'zap': Zap, 'handshake': Handshake };
 
 const getTierPercent = (tier) => {
     const idx = TIER_ORDER.indexOf(tier);
@@ -36,7 +37,7 @@ const RoomCard = ({ room }) => {
         <div className="rounded-2xl p-5 transition-all" style={{ background: 'rgba(15,52,96,0.4)', border: `1px solid ${cfg.border}` }}>
             <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
-                    <span className="text-xl">{ROOM_ICONS[room.name] || '🏛️'}</span>
+                    <span className="text-xl">{React.createElement(ROOM_ICONS[room.name] || Landmark, { size: 20 })}</span>
                     <div>
                         <h3 className="text-base font-heading font-bold text-white">{room.name}</h3>
                         <p className="text-xs text-gray-500">{room.points ?? 100} Points</p>
@@ -126,10 +127,10 @@ const ParticipantDashboard = () => {
                         {role}
                     </span>
                     <Link to="/participant/profile" className="p-1.5 rounded-lg transition-colors hover:bg-white/5">
-                        <User size={15} className="text-gray-500 hover:text-white" />
+                        <User size={24} className="text-gray-500 hover:text-white" />
                     </Link>
                     <button onClick={() => { logout(); navigate('/participant'); }} className="p-1.5 rounded-lg transition-colors hover:bg-white/5">
-                        <LogOut size={15} className="text-gray-500 hover:text-white" />
+                        <LogOut size={24} className="text-gray-500 hover:text-white" />
                     </button>
                 </div>
             </div>
@@ -140,7 +141,7 @@ const ParticipantDashboard = () => {
                     <h1 className="text-2xl font-heading font-bold text-white">
                         Welcome back, <span style={{ color: '#F9A24D' }}>{name || citizenId}</span>
                     </h1>
-                    {team && <p className="text-gray-500 text-sm mt-1">🏘️ {team}</p>}
+                    {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={14} /> {team}</p>}
                 </div>
 
                 {/* 4 stat cards */}
@@ -188,7 +189,7 @@ const ParticipantDashboard = () => {
                                     style={{ background: 'linear-gradient(135deg,rgba(249,162,77,0.1),rgba(255,107,53,0.06))', border: '1px solid rgba(249,162,77,0.2)' }}>
                                     <div className="w-12 h-12 rounded-full flex items-center justify-center"
                                         style={{ background: 'rgba(249,162,77,0.15)', border: '2px solid rgba(249,162,77,0.3)' }}>
-                                        <span className="text-2xl">{badge.icon || '🏅'}</span>
+                                        <span className="text-2xl flex items-center justify-center">{React.createElement(BADGE_ICONS[badge.icon] || Award, { size: 24, className: 'text-white' })}</span>
                                     </div>
                                     <p className="text-sm font-heading font-bold text-white">{badge.name}</p>
                                 </div>

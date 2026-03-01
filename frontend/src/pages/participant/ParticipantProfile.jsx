@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Copy, CheckCircle, User, Shield, Star, Clock } from 'lucide-react';
+import { ChevronLeft, Copy, CheckCircle, User, Shield, Star, Clock, Pickaxe, Search, Coins, Landmark, Handshake, Home, Award, Zap, Trophy } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 
 const TIER_COLORS = {
@@ -11,12 +11,13 @@ const TIER_COLORS = {
 };
 
 const ROLE_CONFIG = {
-    Miner: { emoji: '⛏️', color: '#f59e0b', power: 'Submit any transaction first in a room', bonus: '+5 per first tx (max 3)' },
-    Auditor: { emoji: '🔍', color: '#06b6d4', power: 'Find bugs in other teams\' contracts', bonus: '+5 per verified bug found' },
-    Investor: { emoji: '💰', color: '#10b981', power: 'Stake points on another team', bonus: '+10 if that team wins Best Integration' },
-    Governor: { emoji: '🏛️', color: '#8b5cf6', power: 'Create first Room 4 proposal + cast deciding vote', bonus: '+8 first proposal, +5 deciding vote' },
-    Ambassador: { emoji: '🤝', color: '#f472b6', power: 'Help stuck teammates complete rooms', bonus: '+5 per teammate helped (mentor verified)' },
+    Miner: { icon: Pickaxe, color: '#f59e0b', power: 'Submit any transaction first in a room', bonus: '+5 per first tx (max 3)' },
+    Auditor: { icon: Search, color: '#06b6d4', power: 'Find bugs in other teams\' contracts', bonus: '+5 per verified bug found' },
+    Investor: { icon: Coins, color: '#10b981', power: 'Stake points on another team', bonus: '+10 if that team wins Best Integration' },
+    Governor: { icon: Landmark, color: '#8b5cf6', power: 'Create first Room 4 proposal + cast deciding vote', bonus: '+8 first proposal, +5 deciding vote' },
+    Ambassador: { icon: Handshake, color: '#f472b6', power: 'Help stuck teammates complete rooms', bonus: '+5 per teammate helped (mentor verified)' },
 };
+const BADGE_ICONS = { '⚡': Zap, '🤝': Handshake, 'zap': Zap, 'handshake': Handshake };
 
 const Section = ({ title, children }) => (
     <div>
@@ -44,7 +45,8 @@ const ParticipantProfile = () => {
     }
 
     const tierColor = TIER_COLORS[currentTier] || '#6b7280';
-    const roleConfig = ROLE_CONFIG[role] || { emoji: '🎴', color: '#6b7280', power: '—', bonus: '—' };
+    const roleConfig = ROLE_CONFIG[role] || { icon: Pickaxe, color: '#6b7280', power: '—', bonus: '—' };
+    const RoleIcon = roleConfig.icon;
 
     // DNA Badge metadata
     const firstRoomDone = rooms.find(r => r.completed)?.name || 'Not started';
@@ -123,12 +125,12 @@ const ParticipantProfile = () => {
                                 boxShadow: `0 0 30px ${roleConfig.color}20`,
                             }}
                         >
-                            {roleConfig.emoji}
+                            <RoleIcon size={36} style={{ color: roleConfig.color }} />
                         </div>
 
                         <div className="flex-1">
                             <h1 className="text-3xl font-heading font-bold text-white">{name || citizenId}</h1>
-                            {team && <p className="text-gray-500 text-sm">🏘️ {team}</p>}
+                            {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={14} /> {team}</p>}
 
                             {/* Citizen ID row */}
                             <div className="flex items-center gap-3 mt-2 flex-wrap">
@@ -201,7 +203,7 @@ const ParticipantProfile = () => {
                                 className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
                                 style={{ background: `${roleConfig.color}15`, border: `1.5px solid ${roleConfig.color}40` }}
                             >
-                                {roleConfig.emoji}
+                                <RoleIcon size={24} style={{ color: roleConfig.color }} />
                             </div>
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
@@ -278,7 +280,7 @@ const ParticipantProfile = () => {
                                         border: '1px solid rgba(249,162,77,0.15)',
                                     }}
                                 >
-                                    <span className="text-3xl">{badge.icon || '🏅'}</span>
+                                    <span className="text-3xl flex items-center justify-center">{React.createElement(BADGE_ICONS[badge.icon] || Award, { size: 32, className: 'text-white' })}</span>
                                     <p className="text-sm font-heading font-bold text-white">{badge.name}</p>
                                     {badge.description && <p className="text-[10px] text-gray-500">{badge.description}</p>}
                                 </div>
@@ -318,7 +320,7 @@ const ParticipantProfile = () => {
                                             className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
                                             style={{ background: 'rgba(249,162,77,0.1)', border: '1px solid rgba(249,162,77,0.25)' }}
                                         >
-                                            {roleConfig.emoji}
+                                            <RoleIcon size={20} style={{ color: roleConfig.color }} />
                                         </div>
                                         <div>
                                             <p className="text-white font-heading font-bold text-sm">{metadata.name}</p>

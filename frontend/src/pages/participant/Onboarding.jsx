@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Circle, ExternalLink, ChevronRight, Wallet } from 'lucide-react';
+import { CheckCircle, Circle, ExternalLink, ChevronRight, Wallet, Globe, Droplet, FileText, CreditCard, Building2 } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
 import RoleCard from '../../components/participant/RoleCard';
 
@@ -11,7 +11,7 @@ const STEPS = [
         description: 'The browser extension that is your wallet and identity on-chain.',
         action: 'Open MetaMask',
         link: 'https://metamask.io',
-        icon: '🦊',
+        icon: <Wallet size={20} className="text-orange-400" />,
         manualCheck: true,
     },
     {
@@ -19,7 +19,7 @@ const STEPS = [
         title: 'Connect Your Wallet',
         description: 'Authorize BlockCity to read your wallet address. Your seed phrase is never shared.',
         action: 'Connect MetaMask',
-        icon: '🔗',
+        icon: <Wallet size={20} className="text-blue-400" />,
         manualCheck: false,
     },
     {
@@ -27,7 +27,7 @@ const STEPS = [
         title: 'Switch to Testnet',
         description: 'Switch MetaMask to Polygon Amoy or Ethereum Sepolia. Real-money ETH is never used.',
         action: 'Switch Network',
-        icon: '🌐',
+        icon: <Globe size={20} className="text-purple-400" />,
         manualCheck: true,
     },
     {
@@ -36,21 +36,21 @@ const STEPS = [
         description: 'Get free testnet MATIC/ETH from the faucet — needed to pay for gas on transactions.',
         action: 'Open Faucet',
         link: 'https://faucet.polygon.technology',
-        icon: '💧',
+        icon: <Droplet size={20} className="text-cyan-400" />,
         manualCheck: true,
     },
     {
         id: 'name',
         title: 'Register Your Name',
         description: 'Enter your name and team so you appear on the leaderboard.',
-        icon: '📝',
+        icon: <FileText size={20} className="text-green-400" />,
         manualCheck: false,
     },
     {
         id: 'role',
         title: 'Draw Your Role Card',
         description: 'Every participant has a unique role that changes their strategy. Draw yours now.',
-        icon: '🎴',
+        icon: <CreditCard size={20} className="text-pink-400" />,
         manualCheck: false,
     },
 ];
@@ -183,7 +183,7 @@ const Onboarding = () => {
 
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-base">{step.icon}</span>
+                                            <span className="flex items-center justify-center">{step.icon}</span>
                                             <h3 className="text-sm font-heading font-bold text-white">{step.title}</h3>
                                         </div>
                                         <p className="text-gray-500 text-xs leading-relaxed mb-3">{step.description}</p>
@@ -284,7 +284,7 @@ const Onboarding = () => {
                     onMouseEnter={e => allComplete && (e.target.style.boxShadow = '0 0 50px rgba(249,162,77,0.5)')}
                     onMouseLeave={e => allComplete && (e.target.style.boxShadow = '0 0 30px rgba(249,162,77,0.3)')}
                 >
-                    🏙️ Enter BlockCity
+                    <span className="flex items-center justify-center gap-2"><Building2 size={20} /> Enter BlockCity</span>
                 </button>
 
                 {!allComplete && (
