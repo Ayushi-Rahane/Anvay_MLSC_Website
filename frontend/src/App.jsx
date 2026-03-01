@@ -4,31 +4,25 @@ import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { LeaderboardProvider } from './context/LeaderboardContext';
+import { ParticipantProvider } from './context/ParticipantContext';
 import GlobalParticles from './components/common/GlobalParticles';
 import { ParticipantProvider } from './context/ParticipantContext';
 
 function App() {
     return (
         <AuthProvider>
-            <LeaderboardProvider>
-                <div className="min-h-screen flex flex-col bg-primary relative">
-                    <GlobalParticles />
-                    <Navbar />
-                    <main className="flex-1">
-                        <AppRoutes />
-                    </main>
-                    <Footer />
-                </div>
-                <ParticipantProvider>
-                    <div className="min-h-screen flex flex-col bg-primary">
+            <ParticipantProvider>
+                <LeaderboardProvider>
+                    <div className="min-h-screen flex flex-col bg-primary relative">
+                        <GlobalParticles />
                         <Navbar />
                         <main className="flex-1">
                             <AppRoutes />
                         </main>
                         <Footer />
                     </div>
-                </ParticipantProvider>
-            </LeaderboardProvider>
+                </LeaderboardProvider>
+            </ParticipantProvider>
         </AuthProvider>
     );
 }
