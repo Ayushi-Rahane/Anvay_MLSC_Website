@@ -6,7 +6,6 @@ import { AuthProvider } from './context/AuthContext';
 import { LeaderboardProvider } from './context/LeaderboardContext';
 import { ParticipantProvider } from './context/ParticipantContext';
 import GlobalParticles from './components/common/GlobalParticles';
-import { ParticipantProvider } from './context/ParticipantContext';
 
 function App() {
     return (
