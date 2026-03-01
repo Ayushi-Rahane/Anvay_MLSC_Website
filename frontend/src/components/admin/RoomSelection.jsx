@@ -54,10 +54,20 @@ const RoomSelection = ({ onSelectRoom }) => {
         <div className="max-w-6xl mx-auto py-10 px-4">
             {/* Header */}
             <div className="text-center mb-12">
-                <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-3">
+                <h1
+                    className="text-4xl md:text-5xl font-bold uppercase tracking-wider mb-3"
+                    style={{
+                        fontFamily: "'Orbitron', sans-serif",
+                        color: '#F9A24D',
+                        textShadow: '0 0 30px rgba(249,162,77,0.3)',
+                    }}
+                >
                     Select Room You Are Managing
                 </h1>
-                <p className="text-gray-400 text-lg">
+                <p
+                    className="text-gray-300 text-lg uppercase tracking-widest"
+                    style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                >
                     Choose your assigned room to access its mission control dashboard
                 </p>
             </div>
@@ -100,10 +110,18 @@ const RoomSelection = ({ onSelectRoom }) => {
                             </div>
 
                             {/* Room Name */}
-                            <h3 className="text-xl font-heading font-bold text-white mb-1">
+                            <h3
+                                className="text-xl font-bold text-white mb-1 uppercase tracking-wider"
+                                style={{ fontFamily: "'Orbitron', sans-serif" }}
+                            >
                                 {room.name}
                             </h3>
-                            <p className="text-gray-400 text-sm mb-5">{room.description}</p>
+                            <p
+                                className="text-gray-300 text-sm mb-5 tracking-widest uppercase"
+                                style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                            >
+                                {room.description}
+                            </p>
 
                             {/* Stats */}
                             <div className="flex items-center justify-between pt-4 border-t border-gray-700/50">

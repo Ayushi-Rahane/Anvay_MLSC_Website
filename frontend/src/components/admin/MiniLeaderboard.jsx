@@ -19,11 +19,19 @@ const MiniLeaderboard = ({ roomColor }) => {
     return (
         <div className="bg-secondary/60 border border-gray-700/50 rounded-2xl overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-700/50">
-                <h3 className="text-lg font-heading font-bold text-white flex items-center gap-2">
-                    <Trophy size={18} className="text-yellow-400" />
+                <h3
+                    className="text-xl font-bold flex items-center gap-2 uppercase tracking-wider"
+                    style={{ fontFamily: "'Orbitron', sans-serif", color: '#F9A24D' }}
+                >
+                    <Trophy size={18} className="text-[#F9A24D]" />
                     Live Leaderboard
                 </h3>
-                <p className="text-gray-400 text-xs mt-1">Top 5 Participants — Global Ranking</p>
+                <p
+                    className="text-gray-400 text-sm mt-1 uppercase tracking-widest"
+                    style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                >
+                    Top 5 Participants — Global Ranking
+                </p>
             </div>
 
             <div className="divide-y divide-gray-700/30">

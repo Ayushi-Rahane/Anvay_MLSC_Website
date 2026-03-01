@@ -23,8 +23,18 @@ const RoomSummaryBar = ({ room, onToggleStatus, onBack }) => {
                             <Radio size={18} style={{ color: room.color }} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-heading font-bold text-white">{room.name}</h2>
-                            <p className="text-gray-400 text-xs">Mission Control</p>
+                            <h2
+                                className="text-xl font-bold uppercase tracking-wider"
+                                style={{ fontFamily: "'Orbitron', sans-serif", color: room.color }}
+                            >
+                                {room.name}
+                            </h2>
+                            <p
+                                className="text-gray-400 text-sm uppercase tracking-widest"
+                                style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                            >
+                                Mission Control
+                            </p>
                         </div>
                     </div>
                 </div>

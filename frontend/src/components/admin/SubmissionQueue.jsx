@@ -113,8 +113,11 @@ const SubmissionQueue = ({ roomColor }) => {
             <div className="px-6 py-4 border-b border-gray-700/50">
                 <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
                     <div>
-                        <h3 className="text-lg font-heading font-bold text-white flex items-center gap-2">
-                            <FileText size={18} style={{ color: roomColor }} />
+                        <h3
+                            className="text-xl font-bold flex items-center gap-2 uppercase tracking-wider"
+                            style={{ fontFamily: "'Orbitron', sans-serif", color: roomColor }}
+                        >
+                            <FileText size={18} />
                             Completion Queue
                         </h3>
                         <p className="text-gray-400 text-sm">
@@ -131,8 +134,8 @@ const SubmissionQueue = ({ roomColor }) => {
                                 key={f}
                                 onClick={() => setFilter(f)}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors ${filter === f
-                                        ? 'text-white'
-                                        : 'text-gray-400 hover:text-white bg-gray-700/30 hover:bg-gray-700/50'
+                                    ? 'text-white'
+                                    : 'text-gray-400 hover:text-white bg-gray-700/30 hover:bg-gray-700/50'
                                     }`}
                                 style={filter === f ? { backgroundColor: `${roomColor}30`, color: roomColor } : {}}
                             >

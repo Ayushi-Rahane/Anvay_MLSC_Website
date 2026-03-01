@@ -25,8 +25,11 @@ const RoomMetrics = ({ room }) => {
     return (
         <div className="space-y-4">
             {/* Title */}
-            <h3 className="text-lg font-heading font-bold text-white flex items-center gap-2">
-                <BarChart3 size={18} style={{ color: room.color }} />
+            <h3
+                className="text-xl font-bold flex items-center gap-2 uppercase tracking-wider"
+                style={{ fontFamily: "'Orbitron', sans-serif", color: room.color }}
+            >
+                <BarChart3 size={18} />
                 Room Metrics
             </h3>
 

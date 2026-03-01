@@ -1,6 +1,5 @@
 import React from 'react';
 import { RefreshCw } from 'lucide-react';
-import useFetchLeaderboard from '../../hooks/useFetchLeaderboard';
 
 const getTierInfo = (rank) => {
     if (rank <= 3) return { label: 'Top 3', color: '#F9A24D', borderColor: 'rgba(249,162,77,0.3)', bgColor: 'rgba(249,162,77,0.1)' };
@@ -10,23 +9,17 @@ const getTierInfo = (rank) => {
 };
 
 const Leaderboard = () => {
-    const { leaderboard, loading, error } = useFetchLeaderboard();
-
-    if (loading) {
-        return (
-            <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a]">
-                <div className="text-center text-gray-400">Loading leaderboard...</div>
-            </section>
-        );
-    }
-
-    if (error) {
-        return (
-            <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a]">
-                <div className="text-center text-red-400">Error loading leaderboard.</div>
-            </section>
-        );
-    }
+    // Hardcoded leaderboard data
+    const leaderboard = [
+        { _id: "0x7A2F", citizenId: "BC-0x7A2F", name: "Alex Chen", totalScore: 8950 },
+        { _id: "0x9B4E", citizenId: "BC-0x9B4E", name: "Sarah Kumar", totalScore: 8720 },
+        { _id: "0x3C8D", citizenId: "BC-0x3C8D", name: "Marcus Johnson", totalScore: 8450 },
+        { _id: "0x5F1A", citizenId: "BC-0x5F1A", name: "Emily Rodriguez", totalScore: 7890 },
+        { _id: "0x2D9C", citizenId: "BC-0x2D9C", name: "James Park", totalScore: 7650 },
+        { _id: "0x8E3B", citizenId: "BC-0x8E3B", name: "Yuki Tanaka", totalScore: 6950 },
+        { _id: "0x1A4F", citizenId: "BC-0x1A4F", name: "Priya Patel", totalScore: 6820 },
+        { _id: "0x4C7D", citizenId: "BC-0x4C7D", name: "David Kim", totalScore: 6450 },
+    ];
 
     const displayEntries = leaderboard.slice(0, 10);
 

@@ -20,11 +20,17 @@ const ExtraPointsModal = ({ participant, onSave, onClose }) => {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h2 className="text-xl font-heading font-semibold text-white flex items-center gap-2">
-                            <Star size={18} className="text-yellow-400" />
+                        <h2
+                            className="text-xl font-bold flex items-center gap-2 uppercase tracking-wider"
+                            style={{ fontFamily: "'Orbitron', sans-serif", color: '#F9A24D' }}
+                        >
+                            <Star size={18} className="text-[#F9A24D]" />
                             Add Extra Points
                         </h2>
-                        <p className="text-gray-400 text-sm mt-1">
+                        <p
+                            className="text-gray-300 text-sm mt-1 uppercase tracking-widest"
+                            style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                        >
                             For: <span className="text-white font-medium">{participant.name}</span>
                             <span className="text-gray-500 ml-2">({participant.citizenId})</span>
                         </p>
@@ -106,7 +112,17 @@ const ExtraPointsModal = ({ participant, onSave, onClose }) => {
                     <button
                         onClick={handleSave}
                         disabled={extraPoints <= 0}
-                        className="flex-1 py-3 rounded-lg bg-highlight text-white font-semibold hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 py-3 text-[#0a0a1a] font-bold rounded-lg text-sm tracking-widest uppercase transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        style={{
+                            background: 'linear-gradient(135deg, #F9A24D, #ff6b35)',
+                            boxShadow: '0 0 15px rgba(249,162,77,0.3)',
+                        }}
+                        onMouseEnter={(e) => {
+                            if (extraPoints > 0) e.target.style.boxShadow = '0 0 25px rgba(249,162,77,0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                            if (extraPoints > 0) e.target.style.boxShadow = '0 0 15px rgba(249,162,77,0.3)';
+                        }}
                     >
                         <Save size={16} />
                         Save Points

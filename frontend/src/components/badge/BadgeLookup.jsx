@@ -28,33 +28,66 @@ const BadgeLookup = () => {
     };
 
     return (
-        <section id="badge-lookup" className="py-16 px-4 bg-secondary">
+        <section id="badge-lookup" className="py-20 px-4 bg-[#0a0a1a] relative z-20">
             <div className="max-w-2xl mx-auto text-center">
                 <div className="flex items-center justify-center gap-3 mb-3">
-                    <IdCard size={28} className="text-cyan-400" />
-                    <h2 className="text-3xl md:text-4xl font-heading font-bold text-white">
+                    <IdCard size={32} className="text-[#F9A24D]" />
+                    <h2
+                        className="text-4xl md:text-5xl font-bold uppercase tracking-wider"
+                        style={{
+                            fontFamily: "'Orbitron', sans-serif",
+                            color: '#F9A24D',
+                            textShadow: '0 0 30px rgba(249,162,77,0.3)',
+                        }}
+                    >
                         Badge Lookup
                     </h2>
                 </div>
-                <p className="text-gray-400 mb-8">
+                <p
+                    className="text-gray-300 text-lg mb-10 max-w-xl mx-auto uppercase tracking-widest"
+                    style={{ fontFamily: "'Rajdhani', sans-serif" }}
+                >
                     Enter your Citizen ID to view your badge and progress.
                 </p>
 
-                <form onSubmit={handleLookup} className="flex gap-3 mb-8 justify-center max-w-md mx-auto">
-                    <div className="relative flex-1">
-                        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
+                <form onSubmit={handleLookup} className="flex gap-4 mb-10 justify-center max-w-lg mx-auto">
+                    <div className="relative flex-1 group">
+                        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#F9A24D]/60 group-focus-within:text-[#F9A24D] transition-colors" />
                         <input
                             type="text"
                             value={citizenId}
                             onChange={(e) => setCitizenId(e.target.value)}
                             placeholder="Enter Citizen ID..."
-                            className="w-full pl-10 pr-4 py-3 rounded-lg bg-primary border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors"
+                            className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-[#0a0a1a]/50 text-white placeholder-gray-500 font-mono focus:outline-none transition-all duration-300"
+                            style={{
+                                border: '1px solid rgba(249,162,77,0.3)',
+                                boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
+                            }}
+                            onFocus={(e) => {
+                                e.target.style.borderColor = '#F9A24D';
+                                e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.2), inset 0 0 20px rgba(0,0,0,0.5)';
+                            }}
+                            onBlur={(e) => {
+                                e.target.style.borderColor = 'rgba(249,162,77,0.3)';
+                                e.target.style.boxShadow = 'inset 0 0 20px rgba(0,0,0,0.5)';
+                            }}
                         />
                     </div>
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-6 py-3 bg-highlight text-white rounded-lg font-semibold hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+                        className="px-8 py-3.5 font-bold rounded-xl text-sm md:text-base tracking-widest uppercase transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                            background: 'linear-gradient(135deg, #F9A24D, #ff6b35)',
+                            color: '#0a0a1a',
+                            boxShadow: '0 0 20px rgba(249,162,77,0.3)',
+                        }}
+                        onMouseEnter={(e) => {
+                            if (!loading) e.target.style.boxShadow = '0 0 40px rgba(249,162,77,0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                            if (!loading) e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.3)';
+                        }}
                     >
                         {loading ? 'Searching...' : 'Lookup'}
                     </button>
