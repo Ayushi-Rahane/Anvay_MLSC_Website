@@ -47,23 +47,18 @@ export const ParticipantProvider = ({ children }) => {
         setLoading(true);
         setError('');
         try {
+            // Attempt real backend call
             const data = await getParticipantByCitizenId(id);
             setParticipant(data);
             setCitizenId(id);
             localStorage.setItem('bc_citizen_id', id);
         } catch (err) {
-            const status = err?.response?.status;
-            if (status === 404) {
-                setError('Citizen not found. Check your ID and try again.');
-                localStorage.removeItem('bc_citizen_id');
-            } else {
-                // 500 or any other error — fall back to mock so frontend stays testable
-                console.warn(`Backend returned ${status}, using mock data`);
-                const mock = getMockParticipant(id);
-                setParticipant(mock);
-                setCitizenId(id);
-                localStorage.setItem('bc_citizen_id', id);
-            }
+            console.warn(`Backend connection failed for ${id}, using mock data for demo mode.`);
+            // Force fallback to mock data on ANY error (including 404 from Vercel)
+            const mock = getMockParticipant(id);
+            setParticipant(mock);
+            setCitizenId(id);
+            localStorage.setItem('bc_citizen_id', id);
         } finally {
             setLoading(false);
         }
