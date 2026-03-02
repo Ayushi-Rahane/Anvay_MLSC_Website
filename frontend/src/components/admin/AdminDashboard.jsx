@@ -6,9 +6,15 @@ import RoomControlDashboard from './RoomControlDashboard';
 
 const AdminDashboard = () => {
     const { logout, admin } = useAuth();
-    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [selectedRoom, setSelectedRoom] = useState(() => {
+        const saved = localStorage.getItem('bc_admin_room');
+        return saved ? JSON.parse(saved) : null;
+    });
     const [setupRoom, setSetupRoom] = useState(null); // room waiting for setup input
-    const [roomConfig, setRoomConfig] = useState(null); // { totalParticipants, capacity }
+    const [roomConfig, setRoomConfig] = useState(() => {
+        const saved = localStorage.getItem('bc_admin_config');
+        return saved ? JSON.parse(saved) : null;
+    });
 
     const handleRoomClick = (room) => {
         setSetupRoom(room); // show setup modal
@@ -18,11 +24,15 @@ const AdminDashboard = () => {
         setRoomConfig(config);
         setSelectedRoom(setupRoom);
         setSetupRoom(null);
+        localStorage.setItem('bc_admin_room', JSON.stringify(setupRoom));
+        localStorage.setItem('bc_admin_config', JSON.stringify(config));
     };
 
     const handleBack = () => {
         setSelectedRoom(null);
         setRoomConfig(null);
+        localStorage.removeItem('bc_admin_room');
+        localStorage.removeItem('bc_admin_config');
     };
 
     // Room selected + config set → show room control dashboard

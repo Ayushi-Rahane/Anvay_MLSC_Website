@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
@@ -7,8 +7,15 @@ const DEMO_IDS = ['BC2025001', 'BC2025002', 'BC2025003'];
 
 const ParticipantLogin = () => {
     const navigate = useNavigate();
-    const { loginByCitizenId, loading, error } = useParticipant();
+    const { participant, loginByCitizenId, loading, error } = useParticipant();
     const [citizenId, setCitizenId] = useState('');
+
+    // Auto-redirect if already logged in via context restore
+    useEffect(() => {
+        if (participant) {
+            navigate('/participant/dashboard');
+        }
+    }, [participant, navigate]);
 
     // Replace handleSubmit with this:
     const handleSubmit = async (e) => {

@@ -35,6 +35,8 @@ export const AuthProvider = ({ children }) => {
         setAdmin(null);
         setToken(null);
         localStorage.removeItem('token');
+        localStorage.removeItem('bc_admin_room');
+        localStorage.removeItem('bc_admin_config');
     };
 
     const value = {
