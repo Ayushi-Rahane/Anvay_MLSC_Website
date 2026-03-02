@@ -3,7 +3,7 @@ import { Scale, Landmark, Fingerprint, Building2, Shield } from 'lucide-react';
 
 const ROOMS = [
     {
-        id: 'room_1',
+        id: 'room1',
         name: '1. Law Foundry',
         Icon: Scale,
         description: 'Legal challenges and constitutional puzzles',
@@ -12,7 +12,7 @@ const ROOMS = [
         color: '#8b5cf6',
     },
     {
-        id: 'room_2',
+        id: 'room2',
         name: '2. Treasury Mint',
         Icon: Landmark,
         description: 'Financial strategy and resource management',
@@ -21,7 +21,7 @@ const ROOMS = [
         color: '#f59e0b',
     },
     {
-        id: 'room_3',
+        id: 'room3',
         name: '3. Identity Bureau',
         Icon: Fingerprint,
         description: 'Citizen verification and identity challenges',
@@ -30,7 +30,7 @@ const ROOMS = [
         color: '#06b6d4',
     },
     {
-        id: 'room_4',
+        id: 'room4',
         name: '4. Council Chamber',
         Icon: Building2,
         description: 'Governance decisions and policy debates',
@@ -39,7 +39,7 @@ const ROOMS = [
         color: '#ec4899',
     },
     {
-        id: 'room_5',
+        id: 'room5',
         name: '5. Control Center',
         Icon: Shield,
         description: 'Cybersecurity and system defense missions',

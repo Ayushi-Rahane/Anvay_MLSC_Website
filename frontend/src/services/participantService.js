@@ -2,7 +2,7 @@ import API from './api';
 
 // Citizen ID login — used by login screen and context
 export const getParticipantByCitizenId = async (citizenId) => {
-    const response = await API.get(`/participants/citizen/${citizenId}`);
+    const response = await API.get(`/participants/${citizenId}`);
     return response.data;
 };
 

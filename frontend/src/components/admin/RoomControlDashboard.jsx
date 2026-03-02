@@ -34,7 +34,7 @@ const RoomControlDashboard = ({ room, roomConfig, onBack }) => {
                 <div className="flex flex-col lg:flex-row gap-6">
                     {/* Left: Submission Queue (Main) */}
                     <div className="flex-1 min-w-0">
-                        <SubmissionQueue roomColor={room.color} />
+                        <SubmissionQueue room={roomData} />
                     </div>
 
                     {/* Right: Side Panel */}

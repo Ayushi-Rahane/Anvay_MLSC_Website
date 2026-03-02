@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Trophy, Target, TrendingUp, MapPin, LogOut, QrCode, CheckCircle, Lock, User, Scale, Briefcase, Palette, Landmark, Wrench, Home, Award, Zap, Handshake } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
+import QRScannerModal from '../../components/participant/QRScannerModal';
 
 const TIER_ORDER = ['Explorer', 'Builder', 'Architect'];
 const TIER_COLORS = { Explorer: '#34d399', Builder: '#F9A24D', Architect: '#ef4444', '—': '#6b7280' };
@@ -24,7 +25,7 @@ const StatCard = ({ icon: Icon, label, value, iconColor, valueColor }) => (
     </div>
 );
 
-const RoomCard = ({ room }) => {
+const RoomCard = ({ room, onScanClick }) => {
     const status = room.completed ? 'completed' : room.inProgress ? 'inProgress' : 'locked';
     const cfg = {
         completed: { label: 'COMPLETED', color: '#34d399', bg: 'rgba(52,211,153,0.12)', border: 'rgba(52,211,153,0.3)' },
@@ -67,7 +68,9 @@ const RoomCard = ({ room }) => {
                 </div>
             )}
             {status === 'inProgress' && (
-                <button className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:scale-[1.02]"
+                <button
+                    onClick={() => onScanClick(room)}
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:scale-[1.02]"
                     style={{ background: 'linear-gradient(135deg,#F9A24D,#ff6b35)', color: '#0a0a1a', boxShadow: '0 0 15px rgba(249,162,77,0.25)' }}>
                     <QrCode size={13} /> Scan QR
                 </button>
@@ -85,6 +88,9 @@ const RoomCard = ({ room }) => {
 const ParticipantDashboard = () => {
     const navigate = useNavigate();
     const { participant, citizenId, loading, logout, totalScore, roomsCompleted, currentTier, currentRoom, role, badges, rooms, name, team } = useParticipant();
+
+    // QR Scanner State
+    const [isScanning, setIsScanning] = useState(false);
 
     // ✅ navigate inside useEffect — not during render
     useEffect(() => {
@@ -202,10 +208,17 @@ const ParticipantDashboard = () => {
                 <div>
                     <h2 className="text-lg font-heading font-bold text-white mb-4">Room Tracker</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {rooms.map((room, i) => <RoomCard key={i} room={room} />)}
+                        {rooms.map((room, i) => <RoomCard key={i} room={room} onScanClick={() => setIsScanning(true)} />)}
                     </div>
                 </div>
             </div>
+
+            {/* QR Scanner Overlay */}
+            <QRScannerModal
+                isOpen={isScanning}
+                onClose={() => setIsScanning(false)}
+                participantData={{ citizenId, name, currentTier }}
+            />
         </div>
     );
 };

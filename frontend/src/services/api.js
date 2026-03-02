@@ -7,6 +7,15 @@ const API = axios.create({
     },
 });
 
+export const getParticipants = () => API.get('/participants').then(res => res.data);
+export const getParticipantByUce = (uce) => API.get(`/participants/${uce}`).then(res => res.data);
+
+// Submissions / Room Completion API
+export const createSubmission = (data) => API.post('/submissions', data).then(res => res.data);
+export const getSubmissionsByRoom = (roomId) => API.get(`/submissions/room/${roomId}`).then(res => res.data);
+export const updateSubmissionStatus = (id, data) => API.put(`/submissions/${id}/status`, data).then(res => res.data);
+export const deleteSubmission = (id) => API.delete(`/submissions/${id}`).then(res => res.data);
+
 // Request interceptor — attach auth token
 API.interceptors.request.use(
     (config) => {

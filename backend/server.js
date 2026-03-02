@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 // Routes
 // -------------------
 app.use('/api/participants', require('./routes/participantRoutes'));
+app.use('/api/submissions', require('./routes/submissionRoutes'));
 
 
 app.use('/api/admin', require('./routes/mentorRoutes'));

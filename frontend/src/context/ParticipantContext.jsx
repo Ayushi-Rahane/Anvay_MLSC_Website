@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { getParticipantByCitizenId } from '../services/participantService';
 
 const ParticipantContext = createContext(null);
 
@@ -10,13 +9,14 @@ export const useParticipant = () => {
     return ctx;
 };
 
+// Mock data removed — enforcing real backend data.
 export const ParticipantProvider = ({ children }) => {
     const [participant, setParticipant] = useState(null);
     const [citizenId, setCitizenId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // 🔥 Restore session on refresh
+    // Restore session on refresh
     useEffect(() => {
         const saved = localStorage.getItem('bc_citizen_id');
         if (saved) {
@@ -24,33 +24,25 @@ export const ParticipantProvider = ({ children }) => {
         }
     }, []);
 
-    // 🔥 Login using Firestore document ID
+    // Login using Backend API
     const loginByCitizenId = async (id) => {
         setLoading(true);
         setError('');
 
         try {
-            const docRef = doc(db, 'participants', id);
-            const docSnap = await getDoc(docRef);
+            const data = await getParticipantByCitizenId(id);
 
-            if (!docSnap.exists()) {
-                throw new Error('Invalid Citizen ID');
-            }
-
-            const data = docSnap.data();
-
-            setParticipant({
-                id: docSnap.id,
-                ...data,
-            });
-
-            setCitizenId(id);
-            localStorage.setItem('bc_citizen_id', id);
+            setParticipant(data);
+            setCitizenId(data.citizenId || id);
+            localStorage.setItem('bc_citizen_id', data.citizenId || id);
 
         } catch (err) {
-            setError(err.message || 'Login failed');
+            console.error(`Backend connection failed for ${id}:`, err);
+            setError(err.response?.data?.message || err.message || 'Citizen not found. Check your ID and try again.');
             setParticipant(null);
             setCitizenId(null);
+            localStorage.removeItem('bc_citizen_id');
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -62,7 +54,7 @@ export const ParticipantProvider = ({ children }) => {
         localStorage.removeItem('bc_citizen_id');
     };
 
-    // 🔥 Derived values (safe defaults)
+    // Derived values (safe defaults)
     const totalScore = participant?.totalScore ?? 0;
     const roomsCompleted = participant?.rooms?.filter(r => r.completed)?.length ?? 0;
     const currentTier = participant?.currentTier ?? '—';
