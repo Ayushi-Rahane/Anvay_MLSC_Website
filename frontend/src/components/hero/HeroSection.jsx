@@ -133,14 +133,22 @@ const HeroSection = () => {
                 >
                     <a
                         href="#leaderboard"
-                        className="group relative px-9 py-4 font-bold rounded-xl text-sm md:text-base tracking-wider uppercase transition-all duration-300 hover:scale-105"
+                        className="px-9 py-4 font-bold rounded-xl text-sm md:text-base tracking-wider uppercase transition-all duration-300 hover:scale-105"
                         style={{
-                            background: 'linear-gradient(135deg, #F9A24D, #ff6b35)',
-                            color: '#0a0a1a',
-                            boxShadow: '0 0 30px rgba(249,162,77,0.3), 0 4px 15px rgba(0,0,0,0.3)',
+                            border: '2px solid rgba(249,162,77,0.4)',
+                            color: '#F9A24D',
+                            boxShadow: '0 0 20px rgba(249,162,77,0.1)',
                         }}
-                        onMouseEnter={(e) => e.target.style.boxShadow = '0 0 50px rgba(249,162,77,0.5), 0 8px 25px rgba(0,0,0,0.3)'}
-                        onMouseLeave={(e) => e.target.style.boxShadow = '0 0 30px rgba(249,162,77,0.3), 0 4px 15px rgba(0,0,0,0.3)'}
+                        onMouseEnter={(e) => {
+                            e.target.style.borderColor = '#F9A24D';
+                            e.target.style.boxShadow = '0 0 35px rgba(249,162,77,0.25)';
+                            e.target.style.backgroundColor = 'rgba(249,162,77,0.08)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.borderColor = 'rgba(249,162,77,0.4)';
+                            e.target.style.boxShadow = '0 0 20px rgba(249,162,77,0.1)';
+                            e.target.style.backgroundColor = 'transparent';
+                        }}
                     >
                         VIEW LEADERBOARD
                     </a>

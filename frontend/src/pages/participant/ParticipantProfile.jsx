@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Copy, CheckCircle, User, Shield, Star, Clock, Pickaxe, Search, Coins, Landmark, Handshake, Home, Award, Zap, Trophy } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
@@ -36,17 +36,22 @@ const ParticipantProfile = () => {
         badges, rooms,
     } = useParticipant();
 
-    if (!participant) {
-        navigate('/participant');
-        return null;
-    }
+    const [copied, setCopied] = useState(false);
+
+
+    useEffect(() => {
+        if (!participant) navigate('/participant');
+    }, [participant, navigate]);
+
+    if (!participant) return null;
 
     const tierColor = TIER_COLORS[currentTier] || '#6b7280';
     const roleConfig = ROLE_CONFIG[role] || { icon: Pickaxe, color: '#6b7280', power: '—', bonus: '—' };
     const RoleIcon = roleConfig.icon;
 
     // DNA Badge metadata
-    const firstRoomDone = rooms.find(r => r.completed)?.name || 'Not started';
+
+
 
     const copyId = () => {
         navigator.clipboard.writeText(citizenId);
@@ -54,11 +59,7 @@ const ParticipantProfile = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const copyMeta = () => {
-        navigator.clipboard.writeText(JSON.stringify(metadata, null, 2));
-        setMetaCopied(true);
-        setTimeout(() => setMetaCopied(false), 2000);
-    };
+
 
     // Points breakdown from rooms
     const roomPoints = rooms
