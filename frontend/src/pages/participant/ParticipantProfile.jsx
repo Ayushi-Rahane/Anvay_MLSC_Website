@@ -36,9 +36,6 @@ const ParticipantProfile = () => {
         badges, rooms,
     } = useParticipant();
 
-    const [copied, setCopied] = useState(false);
-    const [metaCopied, setMetaCopied] = useState(false);
-
     if (!participant) {
         navigate('/participant');
         return null;
@@ -50,22 +47,6 @@ const ParticipantProfile = () => {
 
     // DNA Badge metadata
     const firstRoomDone = rooms.find(r => r.completed)?.name || 'Not started';
-    const metadata = {
-        name: `BlockCity Citizen — ${name || citizenId}`,
-        description: 'Official BlockCity graduate badge. Each badge is unique to one journey.',
-        image: 'ipfs://YOUR_IMAGE_CID_HERE',
-        attributes: [
-            { trait_type: 'Citizen ID', value: citizenId },
-            { trait_type: 'Role', value: role },
-            { trait_type: 'First Room Completed', value: firstRoomDone },
-            { trait_type: 'Rooms Completed', value: roomsCompleted },
-            { trait_type: 'Highest Tier', value: currentTier },
-            { trait_type: 'Team', value: team || 'Solo' },
-            { trait_type: 'Total Score', value: totalScore },
-            { trait_type: 'City', value: 'BlockCity' },
-            { trait_type: 'Graduation Year', value: '2025' },
-        ],
-    };
 
     const copyId = () => {
         navigator.clipboard.writeText(citizenId);
@@ -289,87 +270,7 @@ const ParticipantProfile = () => {
                     </Section>
                 )}
 
-                {/* DNA Badge */}
-                <Section title="DNA Badge — NFT Metadata">
-                    <div
-                        className="rounded-2xl border overflow-hidden"
-                        style={{ borderColor: 'rgba(249,162,77,0.2)', background: 'rgba(10,10,26,0.95)' }}
-                    >
-                        {/* Preview card */}
-                        <div
-                            className="p-5 border-b"
-                            style={{ borderColor: 'rgba(249,162,77,0.12)', background: 'rgba(249,162,77,0.04)' }}
-                        >
-                            <div
-                                className="rounded-xl p-4 relative overflow-hidden"
-                                style={{
-                                    background: 'linear-gradient(135deg, #0a0a1a, #1a1a2e)',
-                                    border: '1px solid rgba(249,162,77,0.15)',
-                                }}
-                            >
-                                <div
-                                    className="absolute inset-0 pointer-events-none opacity-[0.06]"
-                                    style={{
-                                        backgroundImage: `linear-gradient(rgba(249,162,77,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(249,162,77,0.5) 1px, transparent 1px)`,
-                                        backgroundSize: '20px 20px',
-                                    }}
-                                />
-                                <div className="relative z-10">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div
-                                            className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                                            style={{ background: 'rgba(249,162,77,0.1)', border: '1px solid rgba(249,162,77,0.25)' }}
-                                        >
-                                            <RoleIcon size={20} style={{ color: roleConfig.color }} />
-                                        </div>
-                                        <div>
-                                            <p className="text-white font-heading font-bold text-sm">{metadata.name}</p>
-                                            <p className="text-gray-500 text-[10px]">BlockCity Graduate</p>
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {metadata.attributes.slice(0, 6).map((attr, i) => {
-                                            const colors = ['#F9A24D', '#06b6d4', '#34d399', '#c084fc', '#f472b6', '#f59e0b'];
-                                            const c = colors[i % colors.length];
-                                            return (
-                                                <div key={i} className="rounded-lg px-3 py-2" style={{ background: `${c}08`, border: `1px solid ${c}18` }}>
-                                                    <p className="text-[9px] uppercase tracking-widest" style={{ color: `${c}99` }}>{attr.trait_type}</p>
-                                                    <p className="text-white text-xs font-medium mt-0.5 truncate">{String(attr.value)}</p>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        {/* JSON */}
-                        <div className="px-5 py-4">
-                            <div className="flex items-center justify-between mb-3">
-                                <p className="text-[10px] uppercase tracking-widest text-gray-500">Metadata JSON</p>
-                                <button
-                                    onClick={copyMeta}
-                                    className="text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all"
-                                    style={{
-                                        background: metaCopied ? 'rgba(52,211,153,0.1)' : 'rgba(249,162,77,0.08)',
-                                        border: `1px solid ${metaCopied ? '#34d39940' : 'rgba(249,162,77,0.25)'}`,
-                                        color: metaCopied ? '#34d399' : '#F9A24D',
-                                    }}
-                                >
-                                    {metaCopied ? '✓ Copied' : 'Copy JSON'}
-                                </button>
-                            </div>
-                            <div
-                                className="rounded-xl p-4 overflow-auto max-h-52 font-mono text-[10px] leading-relaxed"
-                                style={{ background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.04)', color: '#6b7280' }}
-                            >
-                                <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                                    {JSON.stringify(metadata, null, 2)}
-                                </pre>
-                            </div>
-                        </div>
-                    </div>
-                </Section>
 
             </div>
         </div>
