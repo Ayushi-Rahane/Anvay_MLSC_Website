@@ -26,22 +26,22 @@ const Footer = () => {
                         <h3 className="text-lg font-heading font-bold text-white mb-4">Quick Links</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a href="#city-map" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                                <a href="/#city-map" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
                                     <MapPin size={14} /> City Map
                                 </a>
                             </li>
                             <li>
-                                <a href="#leaderboard" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                                <a href="/#leaderboard" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
                                     <Trophy size={14} /> Leaderboard
                                 </a>
                             </li>
                             <li>
-                                <a href="#about-us" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                                <a href="/#about-us" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
                                     About Us
                                 </a>
                             </li>
                             <li>
-                                <a href="/admin" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
+                                <a href="/admin" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
                                     <Shield size={14} /> Admin Access
                                 </a>
                             </li>

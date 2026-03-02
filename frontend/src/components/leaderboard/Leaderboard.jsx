@@ -1,5 +1,6 @@
 import React from 'react';
 import { RefreshCw } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const getTierInfo = (rank) => {
     if (rank <= 3) return { label: 'Top 3', color: '#F9A24D', borderColor: 'rgba(249,162,77,0.3)', bgColor: 'rgba(249,162,77,0.1)' };
@@ -24,8 +25,14 @@ const Leaderboard = () => {
     const displayEntries = leaderboard.slice(0, 10);
 
     return (
-        <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a]">
-            <div className="max-w-5xl mx-auto">
+        <section id="leaderboard" className="py-20 px-4 bg-[#0a0a1a] overflow-hidden">
+            <motion.div
+                className="max-w-5xl mx-auto"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+            >
                 {/* Header */}
                 <div className="text-center mb-14">
                     <div className="flex items-center justify-center gap-3 mb-3">
@@ -180,7 +187,7 @@ const Leaderboard = () => {
                         </button>
                     </div>
                 )}
-            </div>
+            </motion.div>
         </section>
     );
 };

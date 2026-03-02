@@ -109,7 +109,7 @@ const HeroSection = () => {
                         textShadow: '0 0 15px rgba(249,162,77,0.6), 0 0 30px rgba(249,162,77,0.4)',
                     }}
                 >
-                    The BlockCity Edition
+                    THE BLOCKCITY EDITION
                 </h2>
 
                 <p
@@ -142,7 +142,7 @@ const HeroSection = () => {
                         onMouseEnter={(e) => e.target.style.boxShadow = '0 0 50px rgba(249,162,77,0.5), 0 8px 25px rgba(0,0,0,0.3)'}
                         onMouseLeave={(e) => e.target.style.boxShadow = '0 0 30px rgba(249,162,77,0.3), 0 4px 15px rgba(0,0,0,0.3)'}
                     >
-                        View Leaderboard
+                        VIEW LEADERBOARD
                     </a>
                     <a
                         href="#badge-lookup"
@@ -163,7 +163,7 @@ const HeroSection = () => {
                             e.target.style.backgroundColor = 'transparent';
                         }}
                     >
-                        Find Your Badge
+                        FIND YOUR BADGE
                     </a>
                 </div>
             </div>
