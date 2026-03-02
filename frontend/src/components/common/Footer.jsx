@@ -36,7 +36,7 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li>
-                                <a href="/#about-us" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
+                                <a href="/#badge-lookup" className="text-gray-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all flex items-center gap-2 text-sm">
                                     About Us
                                 </a>
                             </li>

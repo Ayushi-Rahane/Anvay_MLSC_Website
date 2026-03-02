@@ -11,7 +11,7 @@ const Navbar = () => {
     const navLinks = [
         { label: 'Map', id: 'city-map' },
         { label: 'Leaderboard', id: 'leaderboard' },
-        { label: 'About Us', id: 'about-us' },
+        { label: 'About Us', id: 'badge-lookup' },
     ];
 
     useEffect(() => {
@@ -70,8 +70,8 @@ const Navbar = () => {
                                 key={link.label}
                                 href={getHref(link.id)}
                                 className={`text-sm font-medium transition-all duration-300 ${isActive
-                                        ? 'text-[#F9A24D] drop-shadow-[0_0_8px_rgba(249,162,77,0.8)]'
-                                        : 'text-gray-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]'
+                                    ? 'text-[#F9A24D] drop-shadow-[0_0_8px_rgba(249,162,77,0.8)]'
+                                    : 'text-gray-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]'
                                     }`}
                             >
                                 {link.label}
@@ -125,8 +125,8 @@ const Navbar = () => {
                                 key={link.label}
                                 href={getHref(link.id)}
                                 className={`block text-sm py-1 font-medium transition-all ${isActive
-                                        ? 'text-[#F9A24D] drop-shadow-[0_0_8px_rgba(249,162,77,0.8)]'
-                                        : 'text-gray-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]'
+                                    ? 'text-[#F9A24D] drop-shadow-[0_0_8px_rgba(249,162,77,0.8)]'
+                                    : 'text-gray-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]'
                                     }`}
                                 onClick={() => setMenuOpen(false)}
                             >
