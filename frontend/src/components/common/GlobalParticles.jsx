@@ -13,7 +13,7 @@ const GlobalParticles = () => {
             size: Math.random() * 3 + 1, // 1 to 4 px size
             duration: Math.random() * 25 + 15, // 15 to 40 seconds duration
             delay: Math.random() * -40, // random negative delay to spread them out on load
-            color: Math.random() > 0.5 ? '#F9A24D' : '#00d4ff', // Random mix of amber and cyan
+            color: Math.random() > 0.5 ? '#F9A24D' : '#fbfbfbff', // Random mix of amber and cyan
         }));
         setParticles(newParticles);
     }, []);
