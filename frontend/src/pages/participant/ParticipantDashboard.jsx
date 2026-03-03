@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Trophy, Target, TrendingUp, MapPin, LogOut, QrCode, CheckCircle, Lock, User, Scale, Briefcase, Palette, Landmark, Wrench, Home, Award, Zap, Handshake } from 'lucide-react';
+import { Trophy, Target, TrendingUp, MapPin, LogOut, LogIn, CheckCircle, Lock, User, Scale, Briefcase, Palette, Landmark, Wrench, Home, Award, Zap, Handshake } from 'lucide-react';
 import { useParticipant } from '../../context/ParticipantContext';
-import QRScannerModal from '../../components/participant/QRScannerModal';
 
 const TIER_ORDER = ['Explorer', 'Builder', 'Architect'];
 const TIER_COLORS = { Explorer: '#34d399', Builder: '#F9A24D', Architect: '#ef4444', '—': '#6b7280' };
@@ -25,7 +24,8 @@ const StatCard = ({ icon: Icon, label, value, iconColor, valueColor }) => (
     </div>
 );
 
-const RoomCard = ({ room, onScanClick }) => {
+const RoomCard = ({ room }) => {
+    const navigate = useNavigate();
     const status = room.completed ? 'completed' : room.inProgress ? 'inProgress' : 'locked';
     const cfg = {
         completed: { label: 'COMPLETED', color: '#34d399', bg: 'rgba(52,211,153,0.12)', border: 'rgba(52,211,153,0.3)' },
@@ -69,10 +69,14 @@ const RoomCard = ({ room, onScanClick }) => {
             )}
             {status === 'inProgress' && (
                 <button
-                    onClick={() => onScanClick(room)}
+                    onClick={() => {
+                        const rooms = ['Law Foundry', 'Treasury Mint', 'Identity Bureau', 'Council Chamber', 'Control Center'];
+                        const roomIdx = rooms.indexOf(room.name) + 1;
+                        navigate(`/participant/room/room${roomIdx}`);
+                    }}
                     className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:scale-[1.02]"
                     style={{ background: 'linear-gradient(135deg,#F9A24D,#ff6b35)', color: '#0a0a1a', boxShadow: '0 0 15px rgba(249,162,77,0.25)' }}>
-                    <QrCode size={13} /> Scan QR
+                    <LogIn size={13} /> Access Room
                 </button>
             )}
             {status === 'locked' && (
@@ -89,15 +93,10 @@ const ParticipantDashboard = () => {
     const navigate = useNavigate();
     const { participant, citizenId, loading, logout, totalScore, roomsCompleted, currentTier, currentRoom, role, badges, rooms, name, team } = useParticipant();
 
-    // QR Scanner State
-    const [isScanning, setIsScanning] = useState(false);
-
-    // ✅ navigate inside useEffect — not during render
     useEffect(() => {
         if (!loading && !participant) navigate('/participant');
     }, [participant, loading, navigate]);
 
-    // Loading spinner
     if (loading || !participant) {
         return (
             <div className="min-h-screen flex items-center justify-center" style={{ background: '#0a0a1a' }}>
@@ -116,7 +115,6 @@ const ParticipantDashboard = () => {
 
     return (
         <div className="min-h-screen pb-16" style={{ background: '#0a0a1a' }}>
-            {/* Top bar */}
             <div className="sticky top-0 z-40 px-4 py-3 flex items-center justify-between"
                 style={{ background: 'rgba(10,10,26,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#F9A24D' }}>
@@ -142,7 +140,6 @@ const ParticipantDashboard = () => {
             </div>
 
             <div className="max-w-3xl mx-auto px-4 mt-8 space-y-8">
-                {/* Greeting */}
                 <div>
                     <h1 className="text-2xl font-heading font-bold text-white">
                         Welcome back, <span style={{ color: '#F9A24D' }}>{name || citizenId}</span>
@@ -150,7 +147,6 @@ const ParticipantDashboard = () => {
                     {team && <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5"><Home size={14} /> {team}</p>}
                 </div>
 
-                {/* 4 stat cards */}
                 <div className="grid grid-cols-2 gap-4">
                     <StatCard icon={Trophy} label="Total Score" value={totalScore} iconColor="#F9A24D" valueColor="#F9A24D" />
                     <StatCard icon={Target} label="Rooms Completed" value={`${roomsCompleted}/5`} iconColor="#34d399" />
@@ -158,7 +154,6 @@ const ParticipantDashboard = () => {
                     <StatCard icon={MapPin} label="Current Room" value={currentRoom} iconColor="#06b6d4" />
                 </div>
 
-                {/* Tier progress */}
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(15,52,96,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <div className="flex items-center justify-between mb-3">
                         <p className="text-xs text-gray-400 uppercase tracking-widest">Tier Progress</p>
@@ -185,7 +180,6 @@ const ParticipantDashboard = () => {
                     </div>
                 </div>
 
-                {/* Badges */}
                 {badges.length > 0 && (
                     <div>
                         <h2 className="text-lg font-heading font-bold text-white mb-4">Your Badges</h2>
@@ -204,21 +198,13 @@ const ParticipantDashboard = () => {
                     </div>
                 )}
 
-                {/* Room Tracker */}
                 <div>
                     <h2 className="text-lg font-heading font-bold text-white mb-4">Room Tracker</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {rooms.map((room, i) => <RoomCard key={i} room={room} onScanClick={() => setIsScanning(true)} />)}
+                        {rooms.map((room, i) => <RoomCard key={i} room={room} />)}
                     </div>
                 </div>
             </div>
-
-            {/* QR Scanner Overlay */}
-            <QRScannerModal
-                isOpen={isScanning}
-                onClose={() => setIsScanning(false)}
-                participantData={{ citizenId, name, currentTier }}
-            />
         </div>
     );
 };

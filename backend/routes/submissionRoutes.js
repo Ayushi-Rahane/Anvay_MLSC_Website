@@ -4,13 +4,14 @@ const {
     createSubmission,
     getSubmissionsByRoom,
     updateSubmissionStatus,
-    deleteSubmission
+    deleteSubmission,
+    removeExtraPoints
 } = require('../controllers/submissionController');
-// const { protect } = require('../middleware/authMiddleware'); // Uncomment and apply if needed
 
 router.post('/', createSubmission);
 router.get('/room/:roomId', getSubmissionsByRoom);
 router.put('/:id/status', updateSubmissionStatus);
 router.delete('/:id', deleteSubmission);
+router.delete('/:id/extra/:index', removeExtraPoints);
 
 module.exports = router;

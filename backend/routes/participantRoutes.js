@@ -3,13 +3,13 @@ const router = express.Router();
 const {
     getParticipants,
     getParticipantByUce,
-    updateScore,
-    updateParticipant
+    updateBonusScore,
+    updateFinalProjectScore
 } = require('../controllers/participantController');
 
 router.get('/', getParticipants);
 router.get('/:uce', getParticipantByUce);
-router.put('/:uce/score', updateScore);   // for updating room scores
-//router.put('/:uce', updateParticipant);   // for general updates
+router.put('/:uce/bonus', updateBonusScore);
+router.put('/:uce/finalproject', updateFinalProjectScore);
 
 module.exports = router;

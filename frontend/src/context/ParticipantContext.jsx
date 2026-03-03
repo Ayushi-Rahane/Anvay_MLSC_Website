@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getParticipantByCitizenId } from '../services/participantService';
+import { createSubmission } from '../services/api';
+import { ROOMS_META } from '../data/roomsData'; // Assuming this exists or is needed for metadata
+
 
 const ParticipantContext = createContext(null);
 
@@ -65,6 +68,33 @@ export const ParticipantProvider = ({ children }) => {
     const name = participant?.name ?? '';
     const team = participant?.team ?? '';
 
+    // Complete room and update score
+    const completeRoom = async (roomId, secretCode) => {
+        if (!citizenId) return;
+
+        try {
+            await createSubmission({
+                uce: citizenId,
+                roomId,
+                name: participant?.name || 'Unknown',
+                tier: 'Explorer', // Default tier
+                secretCode
+            });
+
+            // Re-fetch participant data to update UI
+            await loginByCitizenId(citizenId);
+        } catch (err) {
+            console.error('Failed to complete room:', err);
+            throw err;
+        }
+    };
+
+    // Map room array to progress object for UI
+    const roomProgress = rooms.reduce((acc, r) => {
+        acc[r.id || r.roomId] = r.completed ? r.tier : null;
+        return acc;
+    }, {});
+
     return (
         <ParticipantContext.Provider value={{
             participant,
@@ -73,6 +103,9 @@ export const ParticipantProvider = ({ children }) => {
             error,
             loginByCitizenId,
             logout,
+            completeRoom,
+            ROOMS_META,
+            roomProgress,
             totalScore,
             roomsCompleted,
             currentTier,

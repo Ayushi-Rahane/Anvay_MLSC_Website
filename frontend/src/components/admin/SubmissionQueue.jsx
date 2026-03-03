@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Check, X, Plus, Clock, ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { Search, Check, X, Plus, Clock, ChevronDown, ChevronUp, FileText, Trash2 } from 'lucide-react';
 import ExtraPointsModal from './ExtraPointsModal';
-import { getSubmissionsByRoom, updateSubmissionStatus, deleteSubmission } from '../../services/api';
+import { getSubmissionsByRoom, updateSubmissionStatus, deleteSubmission, removeExtraPoints } from '../../services/api';
+
 
 const tierColors = {
     Explorer: 'text-orange-400 bg-orange-500/10 border-orange-500/30',
@@ -21,8 +22,8 @@ const SubmissionQueue = ({ room }) => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [extraPointsTarget, setExtraPointsTarget] = useState(null);
-    const [activeTab, setActiveTab] = useState('incoming');
     const [searchQuery, setSearchQuery] = useState('');
+
     const [expandedHistory, setExpandedHistory] = useState(null);
 
     const fetchSubmissions = async () => {
@@ -48,25 +49,8 @@ const SubmissionQueue = ({ room }) => {
         return () => clearInterval(interval);
     }, [room.id]);
 
-    const handleApprove = async (id) => {
-        try {
-            await updateSubmissionStatus(id, { status: 'approved' });
-            fetchSubmissions();
-        } catch (err) {
-            console.error('Failed to approve', err);
-        }
-    };
-
-    const handleReject = async (id) => {
-        try {
-            await deleteSubmission(id);
-            fetchSubmissions();
-        } catch (err) {
-            console.error('Failed to reject/delete', err);
-        }
-    };
-
     const handleExtraPointsSave = async (id, points, reason) => {
+
         try {
             await updateSubmissionStatus(id, { extraPoints: points, reason });
             fetchSubmissions();
@@ -75,17 +59,25 @@ const SubmissionQueue = ({ room }) => {
         }
     };
 
+    const handleRemoveExtraPoints = async (id, index) => {
+        if (!window.confirm('Are you sure you want to remove these bonus points?')) return;
+        try {
+            await removeExtraPoints(id, index);
+            fetchSubmissions();
+        } catch (err) {
+            console.error('Failed to remove extra points', err);
+        }
+    };
+
     const toggleHistory = (id) => {
+
         setExpandedHistory(expandedHistory === id ? null : id);
     };
 
     // Filter by Tab and Search
     const displayedSubmissions = submissions.filter((s) => {
-        const matchesTab = activeTab === 'incoming'
-            ? (s.status === 'pending' || s.status === 'rejected')
-            : (s.status === 'approved');
-
-        if (!matchesTab) return false;
+        // We only care about completed (approved) submissions in new flow
+        if (s.status !== 'approved') return false;
 
         if (!searchQuery.trim()) return true;
         const query = searchQuery.toLowerCase();
@@ -95,8 +87,8 @@ const SubmissionQueue = ({ room }) => {
         );
     });
 
-    const pendingCount = submissions.filter((s) => s.status === 'pending').length;
     const completedCount = submissions.filter((s) => s.status === 'approved').length;
+
 
     return (
         <div className="bg-secondary/60 backdrop-blur-sm border border-gray-700/50 rounded-2xl overflow-hidden">
@@ -112,36 +104,18 @@ const SubmissionQueue = ({ room }) => {
                             Room Activity
                         </h3>
                         <p className="text-gray-400 text-sm">
-                            {pendingCount > 0 ? (
-                                <span><span className="text-yellow-400 font-semibold">{pendingCount}</span> pending approval</span>
-                            ) : (
-                                'No pending submissions'
-                            )}
+                            Manage points for participants who have completed the room
                         </p>
+
                     </div>
                 </div>
 
-                {/* Tabs & Search Row */}
+                {/* Search Row */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex bg-gray-800/50 p-1 rounded-lg w-fit border border-gray-700/50">
-                        <button
-                            onClick={() => setActiveTab('incoming')}
-                            className={`px-4 py-2 rounded-md text-sm font-bold tracking-wider transition-all duration-300 ${activeTab === 'incoming'
-                                    ? 'bg-gray-700/80 text-white shadow-lg'
-                                    : 'text-gray-400 hover:text-white'
-                                }`}
-                        >
-                            INCOMING ({pendingCount})
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('completed')}
-                            className={`px-4 py-2 rounded-md text-sm font-bold tracking-wider transition-all duration-300 ${activeTab === 'completed'
-                                    ? 'bg-gray-700/80 text-white shadow-lg'
-                                    : 'text-gray-400 hover:text-white'
-                                }`}
-                        >
+                    <div className="flex items-center gap-2 px-2">
+                        <span className="px-4 py-2 rounded-md text-sm font-bold tracking-wider bg-gray-700/80 text-white shadow-lg border border-gray-600/50">
                             COMPLETED ({completedCount})
-                        </button>
+                        </span>
                     </div>
 
                     <div className="relative w-full md:w-64">
@@ -174,13 +148,9 @@ const SubmissionQueue = ({ room }) => {
                             <th className="text-left px-4 py-3">Citizen ID</th>
                             <th className="text-left px-4 py-3">Name</th>
                             <th className="text-center px-4 py-3">Status</th>
-                            {activeTab === 'completed' && (
-                                <>
-                                    <th className="text-center px-4 py-3">Base</th>
-                                    <th className="text-center px-4 py-3">Extra</th>
-                                    <th className="text-center px-4 py-3">Total</th>
-                                </>
-                            )}
+                            <th className="text-center px-4 py-3">Base</th>
+                            <th className="text-center px-4 py-3">Extra</th>
+                            <th className="text-center px-4 py-3">Total</th>
                             <th className="text-center px-4 py-3">Actions</th>
                         </tr>
                     </thead>
@@ -213,62 +183,52 @@ const SubmissionQueue = ({ room }) => {
                                             </span>
                                         </td>
 
-                                        {activeTab === 'completed' && (
-                                            <>
-                                                <td className="px-4 py-4 text-center text-gray-300 font-medium">{sub.basePoints}</td>
-                                                <td className="px-4 py-4 text-center">
-                                                    <div className="flex items-center justify-center gap-1">
-                                                        <span className="text-yellow-400 font-medium">
-                                                            {sub.extraPoints > 0 ? `+${sub.extraPoints}` : '—'}
-                                                        </span>
-                                                        {hasHistory && (
-                                                            <button
-                                                                onClick={() => toggleHistory(sub.id)}
-                                                                className="p-0.5 rounded text-gray-500 hover:text-yellow-400 transition-colors"
-                                                            >
-                                                                {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-4 py-4 text-center font-bold" style={{ color: roomColor }}>
-                                                    {finalPoints}
-                                                </td>
-                                            </>
-                                        )}
+                                        <td className="px-4 py-4 text-center text-gray-300 font-medium">{sub.basePoints}</td>
+                                        <td className="px-4 py-4 text-center">
+                                            <div className="flex items-center justify-center gap-1">
+                                                <span className="text-yellow-400 font-medium">
+                                                    {sub.extraPoints > 0 ? `+${sub.extraPoints}` : '—'}
+                                                </span>
+                                                {hasHistory && (
+                                                    <button
+                                                        onClick={() => toggleHistory(sub.id)}
+                                                        className="p-0.5 rounded text-gray-500 hover:text-yellow-400 transition-colors"
+                                                    >
+                                                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-4 text-center font-bold" style={{ color: roomColor }}>
+                                            {finalPoints}
+                                        </td>
 
                                         <td className="px-4 py-4">
                                             <div className="flex items-center justify-center gap-2">
-                                                {activeTab === 'incoming' && sub.status === 'pending' && (
-                                                    <>
-                                                        <button
-                                                            onClick={() => handleApprove(sub.id)}
-                                                            className="px-3 py-1.5 rounded-lg bg-green-500/15 text-green-400 text-xs font-bold hover:bg-green-500/25 transition-colors border border-green-500/30 flex items-center gap-1"
-                                                        >
-                                                            <Check size={12} /> Approve
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleReject(sub.id)}
-                                                            className="px-3 py-1.5 rounded-lg bg-red-500/15 text-red-400 text-xs font-bold hover:bg-red-500/25 transition-colors border border-red-500/30 flex items-center gap-1"
-                                                        >
-                                                            <X size={12} /> Reject
-                                                        </button>
-                                                    </>
-                                                )}
-                                                {activeTab === 'completed' && (
-                                                    <button
-                                                        onClick={() => setExtraPointsTarget(sub)}
-                                                        className="px-3 py-1.5 rounded-lg bg-yellow-500/15 text-yellow-400 text-xs font-bold hover:bg-yellow-500/25 transition-colors border border-yellow-500/30 flex items-center gap-1"
-                                                    >
-                                                        <Plus size={12} /> Extra
-                                                    </button>
-                                                )}
+                                                <button
+                                                    onClick={() => handleExtraPointsSave(sub.id, sub.extraPoints + 3, 'Bonus +3')}
+                                                    className="px-2 py-1 rounded bg-yellow-500/15 text-yellow-400 text-xs font-bold hover:bg-yellow-500/25 transition-colors border border-yellow-500/30 font-mono"
+                                                >
+                                                    +3
+                                                </button>
+                                                <button
+                                                    onClick={() => handleExtraPointsSave(sub.id, sub.extraPoints + 4, 'Bonus +4')}
+                                                    className="px-2 py-1 rounded bg-orange-500/15 text-orange-400 text-xs font-bold hover:bg-orange-500/25 transition-colors border border-orange-500/30 font-mono"
+                                                >
+                                                    +4
+                                                </button>
+                                                <button
+                                                    onClick={() => handleExtraPointsSave(sub.id, sub.extraPoints + 5, 'Bonus +5')}
+                                                    className="px-2 py-1 rounded bg-red-500/15 text-red-500 text-xs font-bold hover:bg-red-500/25 transition-colors border border-red-500/30 font-mono"
+                                                >
+                                                    +5
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
 
                                     {/* Extra Points History (expandable) */}
-                                    {activeTab === 'completed' && isExpanded && hasHistory && (
+                                    {isExpanded && hasHistory && (
                                         <tr>
                                             <td colSpan={7} className="px-6 py-0">
                                                 <div className="bg-primary/60 border border-gray-700/30 rounded-lg mb-3 mt-1 overflow-hidden">
@@ -278,14 +238,24 @@ const SubmissionQueue = ({ room }) => {
                                                     </div>
                                                     <div className="divide-y divide-gray-700/20">
                                                         {sub.extraHistory.map((entry, i) => (
-                                                            <div key={i} className="px-4 py-2.5 flex items-center justify-between">
+                                                            <div key={i} className="px-4 py-2.5 flex items-center justify-between group hover:bg-white/5 transition-colors">
                                                                 <div className="flex items-center gap-3">
                                                                     <span className="text-yellow-400 font-bold text-sm">+{entry.points}</span>
                                                                     <span className="text-gray-300 text-sm">{entry.reason || 'No reason provided'}</span>
                                                                 </div>
-                                                                <span className="text-gray-500 text-xs">{new Date(entry.addedAt).toLocaleString()}</span>
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="text-gray-500 text-xs">{new Date(entry.addedAt).toLocaleString()}</span>
+                                                                    <button
+                                                                        onClick={() => handleRemoveExtraPoints(sub.id, i)}
+                                                                        className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all"
+                                                                        title="Remove bonus points"
+                                                                    >
+                                                                        <Trash2 size={13} />
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         ))}
+
                                                     </div>
                                                 </div>
                                             </td>
@@ -300,7 +270,8 @@ const SubmissionQueue = ({ room }) => {
                 {displayedSubmissions.length === 0 && !loading && (
                     <div className="text-center py-12 text-gray-500 h-full flex flex-col items-center justify-center">
                         <FileText size={32} className="mb-3 text-gray-600" />
-                        <p>{searchQuery ? `No results for "${searchQuery}"` : `No ${activeTab} submissions`}</p>
+                        <p>{searchQuery ? `No results for "${searchQuery}"` : 'No completed submissions yet'}</p>
+
                     </div>
                 )}
             </div>

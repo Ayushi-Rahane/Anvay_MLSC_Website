@@ -16,7 +16,7 @@ const calcTotal = (data) =>
 // @route   POST /api/submissions
 const createSubmission = async (req, res, next) => {
     try {
-        const { uce, roomId, name, tier } = req.body;
+        const { uce, roomId, name, tier, secretCode } = req.body;
         if (!uce || !roomId) {
             return res.status(400).json({ message: 'UCE and roomId are required' });
         }
@@ -26,8 +26,13 @@ const createSubmission = async (req, res, next) => {
             return res.status(400).json({ message: 'Invalid room id' });
         }
 
+        // Secret code validation
+        const ADMIN_SECRET_CODE = 'ANVAYA2025';
+        if (secretCode !== ADMIN_SECRET_CODE) {
+            return res.status(401).json({ message: 'Invalid secret code. Please ask the admin.' });
+        }
+
         // Check if a pending or approved submission already exists for this UCE + SPECIFIC room
-        // Querying only by 'uce' to avoid requiring a Firestore composite index
         const snapshot = await submissionsCollection
             .where('uce', '==', uce.toUpperCase())
             .get();
@@ -41,20 +46,34 @@ const createSubmission = async (req, res, next) => {
             return res.status(400).json({ message: 'Submission already exists for this specific room.' });
         }
 
-        // Create new submission
+        // Create new submission - Automatically approve if code is correct
         const newSubmission = {
             uce: uce.toUpperCase(),
             roomId,
             name: name || 'Unknown',
             tier: tier || 'Explorer',
-            basePoints: 100, // Example default base points
+            basePoints: 10, // Default base points updated to 10
             extraPoints: 0,
-            status: 'pending',
+            status: 'approved', // Auto-approved on valid code
             extraHistory: [],
-            submittedAt: new Date().toISOString()
+            submittedAt: new Date().toISOString(),
+            approvedAt: new Date().toISOString()
         };
 
         const docRef = await submissionsCollection.add(newSubmission);
+
+        // Also update the participant's score immediately
+        const pDocRef = participantsCollection.doc(uce.toUpperCase());
+        const pDoc = await pDocRef.get();
+        if (pDoc.exists) {
+            const updatedP = { ...pDoc.data(), [roomId]: 10 };
+            const newTotalScore = calcTotal(updatedP);
+            await pDocRef.update({
+                [roomId]: 10,
+                totalScore: newTotalScore
+            });
+        }
+
         res.status(201).json({ id: docRef.id, ...newSubmission });
     } catch (error) {
         next(error);
@@ -111,24 +130,21 @@ const updateSubmissionStatus = async (req, res, next) => {
         }
 
         await docRef.update(updates);
+        const finalExtra = updates.extraPoints !== undefined ? updates.extraPoints : subData.extraPoints;
 
-        // If marking as approved, update the actual participant score in Firestore
-        if (status === 'approved' && subData.status !== 'approved') {
-            const finalBase = subData.basePoints;
-            const finalExtra = updates.extraPoints !== undefined ? updates.extraPoints : subData.extraPoints;
-            const totalRoomScore = finalBase + finalExtra;
-
-            const pDocRef = participantsCollection.doc(subData.uce);
-            const pDoc = await pDocRef.get();
-            if (pDoc.exists) {
-                const updatedP = { ...pDoc.data(), [subData.roomId]: totalRoomScore };
-                const newTotalScore = calcTotal(updatedP);
-                await pDocRef.update({
-                    [subData.roomId]: totalRoomScore,
-                    totalScore: newTotalScore
-                });
-            }
+        // Update the actual participant score in Firestore for this room
+        const totalRoomScore = subData.basePoints + finalExtra;
+        const pDocRef = participantsCollection.doc(subData.uce);
+        const pDoc = await pDocRef.get();
+        if (pDoc.exists) {
+            const updatedP = { ...pDoc.data(), [subData.roomId]: totalRoomScore };
+            const newTotalScore = calcTotal(updatedP);
+            await pDocRef.update({
+                [subData.roomId]: totalRoomScore,
+                totalScore: newTotalScore
+            });
         }
+
 
         res.json({ message: 'Submission updated successfully', id, ...updates });
     } catch (error) {
@@ -152,9 +168,57 @@ const deleteSubmission = async (req, res, next) => {
     }
 };
 
+// @desc    Remove an extra points entry
+// @route   DELETE /api/submissions/:id/extra/:index
+const removeExtraPoints = async (req, res, next) => {
+    try {
+        const { id, index } = req.params;
+        const docRef = submissionsCollection.doc(id);
+        const doc = await docRef.get();
+        if (!doc.exists) return res.status(404).json({ message: 'Submission not found' });
+
+        const subData = doc.data();
+        const history = subData.extraHistory || [];
+        const idx = parseInt(index);
+
+        if (isNaN(idx) || idx < 0 || idx >= history.length) {
+            return res.status(400).json({ message: 'Invalid history index' });
+        }
+
+        const removedEntry = history[idx];
+        const newExtraPoints = subData.extraPoints - removedEntry.points;
+        const newHistory = [...history];
+        newHistory.splice(idx, 1);
+
+        await docRef.update({
+            extraPoints: newExtraPoints,
+            extraHistory: newHistory
+        });
+
+        // Update participant score
+        const totalRoomScore = subData.basePoints + newExtraPoints;
+        const pDocRef = participantsCollection.doc(subData.uce);
+        const pDoc = await pDocRef.get();
+        if (pDoc.exists) {
+            const updatedP = { ...pDoc.data(), [subData.roomId]: totalRoomScore };
+            const newTotalScore = calcTotal(updatedP);
+            await pDocRef.update({
+                [subData.roomId]: totalRoomScore,
+                totalScore: newTotalScore
+            });
+        }
+
+        res.json({ message: 'Extra points removed', extraPoints: newExtraPoints });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createSubmission,
     getSubmissionsByRoom,
     updateSubmissionStatus,
-    deleteSubmission
+    deleteSubmission,
+    removeExtraPoints
 };
+

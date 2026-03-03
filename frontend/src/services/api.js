@@ -15,6 +15,8 @@ export const createSubmission = (data) => API.post('/submissions', data).then(re
 export const getSubmissionsByRoom = (roomId) => API.get(`/submissions/room/${roomId}`).then(res => res.data);
 export const updateSubmissionStatus = (id, data) => API.put(`/submissions/${id}/status`, data).then(res => res.data);
 export const deleteSubmission = (id) => API.delete(`/submissions/${id}`).then(res => res.data);
+export const removeExtraPoints = (id, index) => API.delete(`/submissions/${id}/extra/${index}`).then(res => res.data);
+
 
 // Request interceptor — attach auth token
 API.interceptors.request.use(

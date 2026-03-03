@@ -105,31 +105,8 @@ const getParticipantByUce = async (req, res, next) => {
     }
 };
 
-// @desc    Update room score (triggered by QR scan)
-// @route   PUT /api/participants/:uce/score
-const updateScore = async (req, res, next) => {
-    try {
-        const uce = req.params.uce.toUpperCase();
-        const { room, score } = req.body;
 
-        const validRooms = ['room1', 'room2', 'room3', 'room4', 'room5'];
-        if (!validRooms.includes(room)) {
-            return res.status(400).json({ message: 'Invalid room. Must be room1 to room5' });
-        }
 
-        const docRef = participantsCollection.doc(uce);
-        const doc = await docRef.get();
-        if (!doc.exists) return res.status(404).json({ message: 'Participant not found' });
-
-        const updated = { ...doc.data(), [room]: Number(score) };
-        const totalScore = calcTotal(updated);
-
-        await docRef.update({ [room]: Number(score), totalScore });
-        res.json({ message: 'Room score updated', uce, room, score, totalScore });
-    } catch (error) {
-        next(error);
-    }
-};
 
 // @desc    Mentor updates bonus score
 // @route   PUT /api/participants/:uce/bonus
@@ -176,7 +153,6 @@ const updateFinalProjectScore = async (req, res, next) => {
 module.exports = {
     getParticipants,
     getParticipantByUce,
-    updateScore,
     updateBonusScore,
     updateFinalProjectScore
 };

@@ -58,7 +58,10 @@ contract CityLaw {
         architectTask: 'Multi-owner: mapping(address=>bool) isOwner, addOwner(), removeOwner(). Require 2-of-N owners to approve any law addition.',
         tools: [
             { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
+            { label: 'Resource Document', url: 'https://docs.google.com/document/d/1example1', icon: <BookOpen size={16} /> },
+            { label: 'Platform Link', url: 'https://example-platform.com', icon: <ExternalLink size={16} /> },
         ],
+
     },
     room_2: {
         persona: '💼 The Treasurer',
@@ -103,7 +106,10 @@ contract CityToken is ERC20, Ownable {
         tools: [
             { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
             { label: 'Polygonscan Amoy', url: 'https://amoy.polygonscan.com', icon: <Search size={16} /> },
+            { label: 'Resource Document', url: 'https://docs.google.com/document/d/1example2', icon: <BookOpen size={16} /> },
+            { label: 'Platform Link', url: 'https://example-platform.com/treasury', icon: <ExternalLink size={16} /> },
         ],
+
     },
     room_3: {
         persona: '🎨 The Identity Minister',
@@ -157,7 +163,10 @@ contract CitizenBadge is ERC721, Ownable {
         tools: [
             { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
             { label: 'NFT.Storage', url: 'https://nft.storage', icon: <Package size={16} /> },
+            { label: 'Resource Document', url: 'https://docs.google.com/document/d/1example3', icon: <BookOpen size={16} /> },
+            { label: 'Platform Link', url: 'https://example-platform.com/identity', icon: <ExternalLink size={16} /> },
         ],
+
     },
     room_4: {
         persona: '🏛️ The Council Speaker',
@@ -243,7 +252,10 @@ contract CityVoting {
         architectTask: 'Token-weighted voting: import Room 2 token interface. Replace yesVotes++ with yesVotes += IERC20(tokenAddress).balanceOf(msg.sender).',
         tools: [
             { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
+            { label: 'Resource Document', url: 'https://docs.google.com/document/d/1example4', icon: <BookOpen size={16} /> },
+            { label: 'Platform Link', url: 'https://example-platform.com/council', icon: <ExternalLink size={16} /> },
         ],
+
     },
     room_5: {
         persona: '🔧 The City Engineer',
@@ -313,7 +325,10 @@ async function setCityName() {
         tools: [
             { label: 'Remix IDE', url: 'https://remix.ethereum.org', icon: <Wrench size={16} /> },
             { label: 'Ethers.js Docs', url: 'https://docs.ethers.org', icon: <BookOpen size={16} /> },
+            { label: 'Resource Document', url: 'https://docs.google.com/document/d/1example5', icon: <BookOpen size={16} /> },
+            { label: 'Platform Link', url: 'https://example-platform.com/hub', icon: <ExternalLink size={16} /> },
         ],
+
     },
 };
 
@@ -334,7 +349,6 @@ const RoomDetail = () => {
     const currentTier = roomProgress[roomId];
 
     const [tab, setTab] = useState('learn'); // 'learn' | 'code' | 'challenge'
-    const [selectedTier, setSelectedTier] = useState(currentTier || null);
     const [copied, setCopied] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(!!currentTier);
@@ -353,16 +367,19 @@ const RoomDetail = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleSubmit = async () => {
-        if (!selectedTier) return;
+    const handleSubmit = async (code) => {
         setSubmitting(true);
-        // In real app: await submitRoomStamp({ walletAddress, roomId, tier: selectedTier })
-        setTimeout(() => {
-            completeRoom(roomId, selectedTier);
+        try {
+            await completeRoom(roomId, code);
             setSubmitted(true);
+        } catch (err) {
+            console.error('Submission failed:', err);
+            alert(err.response?.data?.message || 'Failed to submit. Please check your secret code.');
+        } finally {
             setSubmitting(false);
-        }, 800);
+        }
     };
+
 
     const TABS = [
         { id: 'learn', label: 'Learn', icon: BookOpen },
@@ -569,51 +586,34 @@ const RoomDetail = () => {
 
                             {!submitted ? (
                                 <>
-                                    <div className="space-y-2 mb-4">
-                                        {TIER_OPTIONS.map((tier) => (
-                                            <button
-                                                key={tier.id}
-                                                onClick={() => setSelectedTier(tier.id)}
-                                                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left"
-                                                style={{
-                                                    background: selectedTier === tier.id ? `${tier.color}12` : 'transparent',
-                                                    borderColor: selectedTier === tier.id ? `${tier.color}50` : 'rgba(255,255,255,0.08)',
-                                                }}
-                                            >
-                                                <div>
-                                                    <p className="text-sm font-medium flex items-center gap-1.5" style={{ color: selectedTier === tier.id ? tier.color : '#9ca3af' }}>
-                                                        {React.createElement(tier.icon, { size: 16 })} {tier.label}
-                                                    </p>
-                                                    <p className="text-[10px] text-gray-600">{tier.desc}</p>
-                                                </div>
-                                                {selectedTier === tier.id && (
-                                                    <CheckCircle size={16} style={{ color: tier.color }} />
-                                                )}
-                                            </button>
-                                        ))}
-                                    </div>
-
                                     <button
-                                        onClick={handleSubmit}
-                                        disabled={!selectedTier || submitting}
+                                        onClick={() => {
+                                            const code = window.prompt("To mark as complete, please enter the secret code provided by the admin:");
+                                            if (code && code.trim().length > 0) {
+                                                handleSubmit(code);
+                                            } else if (code !== null) {
+                                                alert('A valid secret code is required to complete this room.');
+                                            }
+                                        }}
+                                        disabled={submitting}
                                         className="w-full py-3 rounded-xl font-heading font-bold text-sm uppercase tracking-wider transition-all disabled:opacity-30"
                                         style={{
-                                            background: selectedTier ? `linear-gradient(135deg, ${room.color}, ${room.color}99)` : 'rgba(255,255,255,0.05)',
-                                            color: selectedTier ? '#0a0a1a' : '#4b5563',
-                                            boxShadow: selectedTier ? `0 0 20px ${room.color}30` : 'none',
+                                            background: `linear-gradient(135deg, ${room.color}, ${room.color}99)`,
+                                            color: '#0a0a1a',
+                                            boxShadow: `0 0 20px ${room.color}30`,
                                         }}
                                     >
-                                        {submitting ? 'Submitting...' : <span className="flex items-center justify-center gap-2"><Tag size={16} /> Claim Stamp</span>}
+                                        {submitting ? 'Submitting...' : <span className="flex items-center justify-center gap-2"><CheckCircle size={16} /> Mark as Complete</span>}
                                     </button>
                                 </>
                             ) : (
                                 <div className="text-center py-4">
                                     <Trophy size={48} className="mx-auto mb-2 text-yellow-400" />
                                     <p className="text-white font-medium mb-1">
-                                        Stamp claimed at <span style={{ color: room.color }}>{currentTier}</span> tier
+                                        Room successfully marked as <span style={{ color: room.color }}>Complete</span>
                                     </p>
                                     <p className="text-gray-500 text-xs">
-                                        +{currentTier === 'explorer' ? 10 : currentTier === 'builder' ? 15 : 20} pts added to your score
+                                        +10 pts added to your score. Awaiting further admin review.
                                     </p>
                                 </div>
                             )}
